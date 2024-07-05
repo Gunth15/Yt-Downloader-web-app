@@ -6,4 +6,13 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix_web = "4.8.0"
+# Sever framework
+actix-web = "4.8.0"
+# Testing for server
+actix-rt = "2.7.0"
+#Enviorment variable access libraries
+dotenv = "0.15.0"
+#Postgres acess lib
+sqlx = {version = "0.6.2", default_features = false, features = ["postgres","runtime-tokio-native-tls","macros","chrono"]}
+#Data serialization lib
+serde = {version="1.0.144",features=["derive"]}
