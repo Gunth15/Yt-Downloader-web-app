@@ -16,3 +16,6 @@ sqlx = {version = "0.6.2", default_features = false, features = ["postgres","run
 
 #Data serialization lib
 serde = {version="1.0.144",features=["derive"]}
+
+#Db time 
+chrono = {version = "0.4.22",features=["serde"]}
