@@ -6,8 +6,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+#web library/framework
 actix-web = "4.1.0"
 actix-rt = "2.7.0"
+#use for accessing yt_download server
+awc = "3.5.0"
+
 #Enviorment variable access libraries
 dotenv = "0.15.0"
 
@@ -16,6 +20,7 @@ sqlx = {version = "0.6.2", default_features = false, features = ["postgres","run
 
 #Data serialization lib
 serde = {version="1.0.144",features=["derive"]}
+serde_json = "1.0.64"
 
 #Db time 
 chrono = {version = "0.4.22",features=["serde"]}
