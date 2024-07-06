@@ -1,0 +1,15 @@
+[package]
+name = "yt_download_manager"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+#web library/framework
+actix-web = "4.1.0"
+actix-rt = "2.7.0"
+# yt library
+rustube = {version = "0.6.0", features = ["blocking"]}
+#Enviorment variable access libraries
+dotenv = "0.15.0"
+
+yt_service = {path = "../yt_service"}
