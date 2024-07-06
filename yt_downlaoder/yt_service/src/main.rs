@@ -12,7 +12,7 @@ async fn main() -> std::io::Result<()> {
     let host_port = env::var("HOST_PORT").expect("Host port not set in .env file");
     println!("Listening on port {:?}", &host_port);
     // Database server from .env file
-    let db_addr = env::var("DATABASE_ADDRESS").expect("Database address is not set in .env file");
+    let db_addr = env::var("DATABASE_URL").expect("Database url is not set in .env file");
     let db_pool = PgPool::connect(&db_addr).await.unwrap();
 
     let shared_dbpool = web::Data::new(AppState { db: db_pool });
