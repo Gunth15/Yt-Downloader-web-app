@@ -16,7 +16,7 @@ async fn main() -> std::io::Result<()> {
             web::scope("")
                 .service(web::resource("download/{url}").route(web::post().to(download_video)))
                 .service(web::resource("delete/!!").route(web::delete().to(delete_all)))
-                .service(web::resource("delete/{url}").route(web::delete().to(delete_video))),
+                .service(web::resource("delete/{title}").route(web::delete().to(delete_video))),
         )
     })
     .bind(&host_port)?
