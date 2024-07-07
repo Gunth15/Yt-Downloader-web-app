@@ -6,7 +6,7 @@ pub mod handlers {
     use yt_service::models::FetchMeta;
 
     //downloads videos to downloads folder and returns json metas data of video
-    pub fn download_video(path: web::Path<String>) -> HttpResponse {
+    pub async fn download_video(path: web::Path<String>) -> HttpResponse {
         let url = path.into_inner();
         let video = Video::from_url(&url).await.unwrap();
         let thumbnail_url = video.video_details().thumbnails.pop().unwrap().url.clone();
@@ -35,7 +35,7 @@ pub mod handlers {
     }
 
     //deletes a video from downloads folder and retrurns json of completion
-    pub fn delete_video(path: web::Path<String>) -> HttpResponse {
+    pub async fn delete_video(path: web::Path<String>) -> HttpResponse {
         let video_location = format!("./downloads/", path.into_inner(), ".mp4");
 
         let is_deleted = fs::remove_file(Path::new(&video_location)).unwrap();
@@ -43,10 +43,47 @@ pub mod handlers {
         HttpResponse::Ok().json(&format!("{:?} was removed", &video_location))
     }
     //deletes all videos in downloads directory and returns json of success
-    pub fn delete_all() -> HttpResponse {
+    pub async fn delete_all() -> HttpResponse {
         let download_dir = Path::new("./downloads/");
         let resp = fs::remove_dir_all(download_dir);
 
         HttpResponse::Ok().json("all videos deleted")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::handlers::{delete_all, delete_video, download_video};
+    use actix_web::{
+        http::{header::ContentType, StatusCode},
+        test, web, App,
+    };
+    use std::fs;
+    use std::path::Path;
+
+    #[actix_rt::test]
+    async fn test_downloads_test() {
+        let url = web::Path::from("https://www.youtube.com/watch?v=dQw4w9WgXcQ".to_string());
+        let resp = download_video(url).await;
+        assert_eq!(resp.status(), StatusCode::OK);
+        match fs::read(Path::new("Never Gonna Give You Up.mp4")) {
+            Ok(_) => println!("Video does exist"),
+            Err(_) => println!("ERROR Something has gone terribly wrong(check file just in case)"),
+        };
+    }
+    #[actix_rt::test]
+    async fn delete_video_test() {
+        let title = web::Path::from("Never Gonna Give You Up".to_string());
+        let resp = delete_video(title).await;
+        assert_eq!(resp.status(), StatusCode::OK);
+        match fs::read(Path::new("Never Gonna Give You Up.mp4")) {
+            Ok(_) => println!("ERROR video still exist"),
+            Err(_) => println!("Success"),
+        };
+    }
+    #[actix_rt::test]
+    async fn delete_all_test() {
+        let resp = delete_all().await;
+        assert_eq!(resp.status, StatusCode::OK);
     }
 }
