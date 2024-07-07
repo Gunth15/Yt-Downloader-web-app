@@ -7,7 +7,7 @@ use serde_json::json;
 
 pub async fn create_video(
     app_data: web::Data<AppData>,
-    path: web::Path<i32>,
+    path: web::Path<u32>,
     video_request: web::Json<VideoRequest>,
 ) -> HttpResponse {
     let user_id = path.into_inner();

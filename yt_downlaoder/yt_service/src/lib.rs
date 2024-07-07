@@ -24,20 +24,18 @@ pub mod models {
 
     #[derive(Debug, Clone, Serialize, Deserialize)]
     pub struct FetchMeta {
-        pub name: Option<String>,
+        pub title: String,
         pub url: String,
-        pub thumbnail_url: Option<String>,
-        pub user_id: Option<i32>,
+        pub thumbnail_url: String,
         pub video_id: String,
-        pub size: i32,
+        pub size: u64,
     }
     impl From<web::Json<FetchMeta>> for FetchMeta {
         fn from(fetched: web::Json<FetchMeta>) -> Self {
             FetchMeta {
-                name: fetched.name.clone(),
+                title: fetched.title.clone(),
                 url: fetched.url.clone(),
                 thumbnail_url: fetched.thumbnail_url.clone(),
-                user_id: fetched.user_id,
                 video_id: fetched.video_id.clone(),
                 size: fetched.size,
             }
@@ -46,18 +44,18 @@ pub mod models {
 
     #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
     pub struct VideoQuery {
-        pub name: Option<String>,
+        pub title: String,
         pub url: String,
-        pub thumbnail_url: Option<String>,
+        pub thumbnail_url: String,
         pub query_time: Option<NaiveDate>,
-        pub user_id: i32,
+        pub user_id: u32,
         pub video_id: String,
-        pub size: i32,
+        pub size: u64,
     }
     impl From<web::Json<VideoQuery>> for VideoQuery {
         fn from(video_query: web::Json<VideoQuery>) -> Self {
             VideoQuery {
-                name: video_query.name.clone(),
+                title: video_query.title.clone(),
                 url: video_query.url.clone(),
                 thumbnail_url: video_query.thumbnail_url.clone(),
                 query_time: video_query.query_time.clone(),

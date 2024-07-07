@@ -10,12 +10,11 @@ async fn main() -> std::io::Result<()> {
     let host_port = env::var("HOST_PORT").expect("Host port not configured in .env file");
     println!("listening on port {:?}", &host_port);
 
-    //TODO add defualt error page
+    //TODO: add defualt error page
     HttpServer::new(move || {
         App::new().service(
             web::scope("")
                 .service(web::resource("download/{url}").route(web::post().to(download_video)))
-                .service(web::resource("fetc/{url}").route(web::get().to(get_details)))
                 .service(web::resource("delete/!!").route(web::delete().to(delete_all)))
                 .service(web::resource("delete/{url}").route(web::delete().to(delete_video))),
         )
