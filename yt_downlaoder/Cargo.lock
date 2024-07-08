@@ -2682,7 +2682,8 @@ dependencies = [
  "actix-web",
  "dotenv",
  "rustube",
- "yt_service",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

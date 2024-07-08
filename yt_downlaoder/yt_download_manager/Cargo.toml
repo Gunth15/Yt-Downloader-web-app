@@ -11,5 +11,6 @@ actix-rt = "2.7.0"
 rustube = {version = "0.6.0"}
 #Enviorment variable access libraries
 dotenv = "0.15.0"
-
-yt_service = {path = "../yt_service"}
+#Data serialization lib
+serde = {version="1.0.144",features=["derive"]}
+serde_json = "1.0.64"

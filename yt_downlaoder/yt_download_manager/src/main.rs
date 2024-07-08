@@ -1,7 +1,7 @@
 use actix_web::{web, App, HttpServer};
 use dotenv::dotenv;
 use std::env;
-use yt_download_manager::handlers::{delete_all, delete_video, download_video, get_details};
+use yt_download_manager::handlers::{delete_all, delete_video, download_video};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
