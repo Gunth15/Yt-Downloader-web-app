@@ -2,6 +2,7 @@
 pub mod dbscript;
 pub mod handlers;
 pub mod ytscripts;
+
 //NOTE update cargo file with newest version of dependencies
 pub mod routes {
     use crate::handlers::{create_video, delete_all_videos, delete_video, get_all_videos};

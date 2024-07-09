@@ -1,4 +1,4 @@
-workspace = { members = [ "yt_download_manager","yt_service", "yt_web", "yttest"] }
+workspace = { members = [ "pytube_wrpr", "yt_download_manager","yt_service", "yt_web", "yttest"] }
 [package]
 name = "yt_downlaoder"
 version = "0.1.0"
