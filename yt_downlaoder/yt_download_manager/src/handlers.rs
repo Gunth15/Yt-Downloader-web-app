@@ -12,7 +12,7 @@ pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtD
 
     let video = Video::from_url(&url).await?;
     //TODO: thumbnail is in ARC need to find new method to handle
-    let thumbnail_url = video.video_info()
+    let thumbnail_url = video.video_info();
     let video_id = video.id().to_string();
     let title = video.title().to_string();
 
