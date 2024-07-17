@@ -51,7 +51,7 @@ impl From<ActixError> for YtDlErrors {
     }
 }
 impl From<PError> for YtDlErrors {
-    fn from(err: ParseError) -> Self {
+    fn from(err: PError) -> Self {
         YtDlErrors::DlError(err.to_string())
     }
 }

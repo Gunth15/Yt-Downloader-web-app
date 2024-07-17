@@ -16,14 +16,20 @@ pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtD
 
     //query containts image url and title of file
     let mut query = pytube_wrpr::download_n_fetch(&path_url)?;
-    let (title, _mp4) = query.remove(0).split_once(".").unwrap();
+
     let thumbnail_url = query.remove(0);
+    let title = {
+        match query.remove(0).split_once(".") {
+            Some((title, _mp4)) => title.to_string(),
+            None => panic!("Fatal error occured"),
+        }
+    };
 
     //get size of video
     let dir = env::var("CARGO_MANIFEST_DIR")
         .map_err(|_err| YtDlErrors::DlError("Directoty Missing".to_string()))?;
-
-    let file_name = format!("{dir}/src/downloads/{title}.mp4");
+    let file_name = format!("{dir}/downloads/{title}.mp4");
+    println!("{file_name}");
     let size = fs::metadata(file_name)
         .map_err(|_err| YtDlErrors::DlError("File Missing".to_string()))?
         .len();
@@ -39,7 +45,10 @@ pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtD
 
 //deletes a video from downloads folder and retrurns json of completion
 pub async fn delete_video(path: web::Path<String>) -> Result<HttpResponse, YtDlErrors> {
-    let video_location = format!("./downloads/{}{}", path.into_inner(), ".mp4");
+    let dir = env::var("CARGO_MANIFEST_DIR")
+        .map_err(|_err| YtDlErrors::DlError("Directoty Missing".to_string()))?;
+    let video_location = format!("{dir}/downloads/{}{}", path.into_inner(), ".mp4");
+    println!("{video_location}");
 
     fs::remove_file(&video_location).map_err(|_err| {
         YtDlErrors::FileError("File was not found or download directory does not exist".to_string())
@@ -49,7 +58,10 @@ pub async fn delete_video(path: web::Path<String>) -> Result<HttpResponse, YtDlE
 }
 //deletes all videos in downloads directory and returns json of success
 pub async fn delete_all() -> Result<HttpResponse, YtDlErrors> {
-    let download_dir = "./downloads/";
+    let dir = env::var("CARGO_MANIFEST_DIR")
+        .map_err(|_err| YtDlErrors::DlError("Directoty Missing".to_string()))?;
+    let download_dir = format!("{dir}/downloads/");
+
     fs::remove_dir_all(download_dir).map_err(|_err| {
         YtDlErrors::FileError("Download directory could not be found no files deleted".to_string())
     })?;
@@ -68,17 +80,29 @@ mod tests {
         let url = web::Path::from("https://www.youtube.com/watch?v=dQw4w9WgXcQ".to_string());
         let resp = download_video(url).await.unwrap();
         assert_eq!(resp.status(), StatusCode::OK);
-        match fs::read("Never Gonna Give You Up.mp4") {
+
+        let dir = env::var("CARGO_MANIFEST_DIR").unwrap();
+        let download_dir = format!("{dir}/downloads");
+        match fs::read(
+            "{download_dir}/Rick Astley - Never Gonna Give You Up (Official Music Video).mp4",
+        ) {
             Ok(_) => println!("Video does exist"),
             Err(_) => println!("ERROR Something has gone terribly wrong(check file just in case)"),
         };
     }
     #[actix_rt::test]
     async fn delete_video_test() {
-        let title = web::Path::from("Never Gonna Give You Up".to_string());
+        let title = web::Path::from(
+            "Rick Astley - Never Gonna Give You Up (Official Music Video)".to_string(),
+        );
         let resp = delete_video(title).await.unwrap();
         assert_eq!(resp.status(), StatusCode::OK);
-        match fs::read("Never Gonna Give You Up.mp4") {
+
+        let dir = env::var("CARGO_MANIFEST_DIR").unwrap();
+        let download_dir = format!("{dir}/downloads");
+        match fs::read(
+            "{download_dir}/Rick Astley - Never Gonna Give You Up (Official Music Video).mp4",
+        ) {
             Ok(_) => println!("ERROR video still exist"),
             Err(_) => println!("Success"),
         };
