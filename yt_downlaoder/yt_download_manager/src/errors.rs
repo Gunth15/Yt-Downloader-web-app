@@ -1,14 +1,14 @@
 use actix_web::{error, http::StatusCode, HttpResponse};
+use pytube_wrpr::Error as PError;
 use serde::Serialize;
 use std::fmt;
 
 use actix_web::Error as ActixError;
-use rustube::url::ParseError;
 
 #[derive(Debug, Serialize)]
 pub enum YtDlErrors {
     ActixError(String),
-    RtError(String),
+    DlError(String),
     FileError(String),
 }
 impl YtDlErrors {
@@ -18,8 +18,8 @@ impl YtDlErrors {
                 println!("Server error occured. {:?}", msg);
                 "Server error".to_string()
             }
-            YtDlErrors::RtError(msg) => {
-                println!("Rustube error occured. {:?}", msg);
+            YtDlErrors::DlError(msg) => {
+                println!("Download error occured. {:?}", msg);
                 "Rustube error".to_string()
             }
             YtDlErrors::FileError(msg) => {
@@ -33,7 +33,7 @@ impl error::ResponseError for YtDlErrors {
     fn status_code(&self) -> actix_web::http::StatusCode {
         match self {
             YtDlErrors::ActixError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            YtDlErrors::RtError(_) | YtDlErrors::FileError(_) => StatusCode::NOT_FOUND,
+            YtDlErrors::DlError(_) | YtDlErrors::FileError(_) => StatusCode::NOT_FOUND,
         }
     }
     fn error_response(&self) -> actix_web::HttpResponse {
@@ -50,13 +50,8 @@ impl From<ActixError> for YtDlErrors {
         YtDlErrors::ActixError(err.to_string())
     }
 }
-impl From<ParseError> for YtDlErrors {
+impl From<PError> for YtDlErrors {
     fn from(err: ParseError) -> Self {
-        YtDlErrors::RtError(err.to_string())
-    }
-}
-impl From<rustube::Error> for YtDlErrors {
-    fn from(err: rustube::Error) -> Self {
-        YtDlErrors::RtError(err.to_string())
+        YtDlErrors::DlError(err.to_string())
     }
 }
