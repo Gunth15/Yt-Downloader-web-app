@@ -7,6 +7,7 @@ use std::fs;
 
 //downloads videos to downloads folder and returns json metas data of video
 pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtDlErrors> {
+    //NOTE: This does not take url's. it takes request in the form of v=<id> or ust th id
     let path_url = path.into_inner();
 
     let video_id: String = match path_url.split_once('=') {
@@ -29,7 +30,8 @@ pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtD
     let dir = env::var("CARGO_MANIFEST_DIR")
         .map_err(|_err| YtDlErrors::DlError("Directoty Missing".to_string()))?;
     let file_name = format!("{dir}/downloads/{title}.mp4");
-    println!("{file_name}");
+    println!("Downloaded video {}", &file_name);
+
     let size = fs::metadata(file_name)
         .map_err(|_err| YtDlErrors::DlError("File Missing".to_string()))?
         .len();
@@ -43,17 +45,19 @@ pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtD
     }))
 }
 
+//TODO: Delete_video does not work correctly with video name
+
 //deletes a video from downloads folder and retrurns json of completion
 pub async fn delete_video(path: web::Path<String>) -> Result<HttpResponse, YtDlErrors> {
     let dir = env::var("CARGO_MANIFEST_DIR")
         .map_err(|_err| YtDlErrors::DlError("Directoty Missing".to_string()))?;
     let video_location = format!("{dir}/downloads/{}{}", path.into_inner(), ".mp4");
-    println!("{video_location}");
 
     fs::remove_file(&video_location).map_err(|_err| {
         YtDlErrors::FileError("File was not found or download directory does not exist".to_string())
     })?;
 
+    println!("deleted video at {:?}", &video_location);
     Ok(HttpResponse::Ok().json(&format!("{:?} was removed", &video_location)))
 }
 //deletes all videos in downloads directory and returns json of success
@@ -66,6 +70,7 @@ pub async fn delete_all() -> Result<HttpResponse, YtDlErrors> {
         YtDlErrors::FileError("Download directory could not be found no files deleted".to_string())
     })?;
 
+    println!("deleted all videos");
     Ok(HttpResponse::Ok().json("all videos deleted"))
 }
 
