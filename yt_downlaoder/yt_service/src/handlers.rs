@@ -1,4 +1,4 @@
-use crate::dbscript::{create_video_db, delete_all_videos_dbhttp://127.0.0.1:8384, delete_video_db, get_all_videos_db};
+use crate::dbscript::{create_video_db, delete_all_videos_db, delete_video_db, get_all_videos_db};
 use crate::models::{VideoQuery, VideoRequest};
 use crate::state::AppData;
 use crate::ytscripts::{delete_all_yt, delete_video_yt, download_video_yt};
