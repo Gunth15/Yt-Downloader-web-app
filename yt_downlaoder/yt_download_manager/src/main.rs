@@ -10,7 +10,6 @@ async fn main() -> std::io::Result<()> {
     let host_port = env::var("HOST_PORT").expect("Host port not configured in .env file");
     println!("listening on port {:?}", &host_port);
 
-    //TODO: add defualt error page
     HttpServer::new(move || {
         App::new().service(
             web::scope("")

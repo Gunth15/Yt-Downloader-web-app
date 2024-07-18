@@ -7,7 +7,7 @@ use std::fs;
 
 //downloads videos to downloads folder and returns json metas data of video
 pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtDlErrors> {
-    //NOTE: This does not take url's. it takes request in the form of v=<id> or ust th id
+    //NOTE: This does not take url's. it takes request in the form of v=<id> or just the id
     let path_url = path.into_inner();
 
     let video_id: String = match path_url.split_once('=') {
@@ -38,14 +38,12 @@ pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtD
 
     Ok(HttpResponse::Ok().json(FetchMeta {
         title: title.to_string(),
-        url: path_url,
+        url: "".to_string(),
         thumbnail_url,
         video_id: video_id.to_string(),
         size,
     }))
 }
-
-//TODO: Delete_video does not work correctly with video name
 
 //deletes a video from downloads folder and retrurns json of completion
 pub async fn delete_video(path: web::Path<String>) -> Result<HttpResponse, YtDlErrors> {
