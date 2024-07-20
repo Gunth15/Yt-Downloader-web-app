@@ -13,7 +13,7 @@ pub mod routes {
             web::scope("/videos")
                 .service(web::resource("").route(web::get().to(get_all_videos)))
                 .service(web::resource("/new/{user_id}").route(web::post().to(create_video)))
-                .service(web::resource("/delete").route(web::delete().to(delete_all_videos)))
+                .service(web::resource("/delete/ALL!!").route(web::delete().to(delete_all_videos)))
                 .service(web::resource("/delete/{video_id}").route(web::delete().to(delete_video))),
         );
     }

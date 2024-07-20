@@ -22,14 +22,17 @@ pub async fn download_video_yt(video_req: VideoRequest) -> FetchMeta {
         .await
         .unwrap();
 
-    serde_json::from_str(&std::str::from_utf8(&resp).unwrap()).unwrap()
+    let mut meta: FetchMeta = serde_json::from_str(&std::str::from_utf8(&resp).unwrap()).unwrap();
+
+    meta.url.push_str(&url);
+    meta
 }
 //delete video and fetch json response of completion
-pub async fn delete_video_yt(id: String) -> String {
+pub async fn delete_video_yt(vid: &str) -> String {
     dotenv().ok();
 
     let clinet_ip = env::var("CLIENT_PORT").unwrap();
-    let clinet_url = format!("{clinet_ip}/delete/{id}");
+    let clinet_url = format!("{clinet_ip}/delete/{vid}");
 
     let client = awc::Client::default();
     let resp = client

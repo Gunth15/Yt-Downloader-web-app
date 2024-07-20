@@ -45,6 +45,19 @@ impl From<web::Json<VideoQuery>> for VideoQuery {
         }
     }
 }
+impl VideoQuery {
+    pub fn from_meta(meta: FetchMeta, uid: u32) -> Self {
+        VideoQuery {
+            title: meta.title.clone(),
+            url: meta.url.clone(),
+            thumbnail_url: meta.thumbnail_url.clone(),
+            query_time: None,
+            user_id: uid,
+            video_id: meta.video_id.clone(),
+            size: meta.size.clone(),
+        }
+    }
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VideoRequest {

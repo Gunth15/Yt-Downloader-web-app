@@ -1,7 +1,7 @@
-use crate::models::{VideoQuery, VideoRequest};
+use crate::models::VideoQuery;
 use sqlx::postgres::PgPool;
 
-pub async fn create_video_db(pool: &PgPool, query: VideoQuery) -> VideoQuery {
+pub async fn create_video_db(pool: &PgPool, query: VideoQuery) -> String {
     let video_query = sqlx::query_as!(
         VideoQuery,
         "
@@ -14,8 +14,9 @@ pub async fn create_video_db(pool: &PgPool, query: VideoQuery) -> VideoQuery {
         query.query_time,
         query.user_id,
     );
+    "Successfully Downloaded".to_string()
 }
-pub async fn delete_video_db(pool: PgPool, video: VideoQuery) -> String {}
-pub async fn get_video_db(pool: PgPool, url: VideoRequest) -> VideoQuery {}
-pub async fn get_all_videos_db(pool: PgPool) -> vec<VideoQuery> {}
-pub async fn delete_all_videos_db() -> String {}
+pub async fn delete_video_db(pool: &PgPool, vid: &str) -> String {}
+pub async fn get_video_db(pool: &PgPool, vid: &str) -> VideoQuery {}
+pub async fn get_all_videos_db(pool: &PgPool) -> vec<VideoQuery> {}
+pub async fn delete_all_videos_db(pool: &PgPool) -> String {}
