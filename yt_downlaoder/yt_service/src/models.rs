@@ -8,7 +8,7 @@ pub struct FetchMeta {
     pub url: String,
     pub thumbnail_url: String,
     pub video_id: String,
-    pub size: u64,
+    pub size: i32,
 }
 impl From<web::Json<FetchMeta>> for FetchMeta {
     fn from(fetched: web::Json<FetchMeta>) -> Self {
@@ -28,9 +28,9 @@ pub struct VideoQuery {
     pub url: String,
     pub thumbnail_url: String,
     pub query_time: Option<NaiveDate>,
-    pub user_id: u32,
+    pub user_id: i32,
     pub video_id: String,
-    pub size: u64,
+    pub size: i32,
 }
 impl From<web::Json<VideoQuery>> for VideoQuery {
     fn from(video_query: web::Json<VideoQuery>) -> Self {
@@ -46,7 +46,7 @@ impl From<web::Json<VideoQuery>> for VideoQuery {
     }
 }
 impl VideoQuery {
-    pub fn from_meta(meta: FetchMeta, uid: u32) -> Self {
+    pub fn from_meta(meta: FetchMeta, uid: i32) -> Self {
         VideoQuery {
             title: meta.title.clone(),
             url: meta.url.clone(),

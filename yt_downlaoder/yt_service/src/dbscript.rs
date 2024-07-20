@@ -2,17 +2,18 @@ use crate::models::VideoQuery;
 use sqlx::postgres::PgPool;
 
 pub async fn create_video_db(pool: &PgPool, query: VideoQuery) -> String {
-    let video_query = sqlx::query_as!(
-        VideoQuery,
+    let video_query = sqlx::query!(
         "
         INSERT INTO videos 
-        (name,url,thumbnail_url,query_time,user_id,video_id,status,size)
-        VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+        (title,url,thumbnail_url,user_id,video_id,size)
+        VALUES ($1,$2,$3,$4,$5,$6)
          ",
-        query.name,
+        query.title,
+        query.url,
         query.thumbnail_url,
-        query.query_time,
         query.user_id,
+        query.video_id,
+        query.size,
     );
     "Successfully Downloaded".to_string()
 }

@@ -7,14 +7,14 @@ use serde_json::json;
 
 pub async fn create_video(
     app_data: web::Data<AppData>,
-    path: web::Path<u32>,
+    path: web::Path<i32>,
     video_request: web::Json<VideoRequest>,
 ) -> HttpResponse {
     let uid = path.into_inner();
     let video_query = VideoQuery::from_meta(download_video_yt(video_request.into()).await, uid);
-    let res = create_video_db(&app_data.db, video_query);
+    let res = create_video_db(&app_data.db, video_query).await;
 
-    HttpResponse::Ok().json()
+    HttpResponse::Ok().json(&res)
 }
 pub async fn delete_video(app_data: web::Data<AppData>, path: web::Path<String>) -> HttpResponse {
     let vid = path.into_inner();

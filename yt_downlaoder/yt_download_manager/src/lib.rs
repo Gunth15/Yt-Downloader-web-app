@@ -11,7 +11,7 @@ pub mod models {
         pub url: String,
         pub thumbnail_url: String,
         pub video_id: String,
-        pub size: u64,
+        pub size: i32,
     }
     impl From<web::Json<FetchMeta>> for FetchMeta {
         fn from(fetched: web::Json<FetchMeta>) -> Self {
