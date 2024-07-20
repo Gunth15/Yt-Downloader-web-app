@@ -14,10 +14,62 @@ pub async fn create_video_db(pool: &PgPool, query: VideoQuery) -> String {
         query.user_id,
         query.video_id,
         query.size,
-    );
+    )
+    .fetch_one(pool)
+    .await
+    .unwrap();
     "Successfully Downloaded".to_string()
 }
-pub async fn delete_video_db(pool: &PgPool, vid: &str) -> String {}
-pub async fn get_video_db(pool: &PgPool, vid: &str) -> VideoQuery {}
-pub async fn get_all_videos_db(pool: &PgPool) -> vec<VideoQuery> {}
-pub async fn delete_all_videos_db(pool: &PgPool) -> String {}
+pub async fn delete_video_db(pool: &PgPool, vid: &str) -> String {
+    let deletetion = sqlx::query!(
+        "
+        DELETE FROM videos
+        WHERE video_id = $1
+        ",
+        vid
+    )
+    .execute(pool)
+    .await
+    .unwrap()
+    .rows_affected();
+    format!("Deleted {deletetion} video").to_string()
+}
+pub async fn get_video_db(pool: &PgPool, vid: &str) -> VideoQuery {
+    sqlx::query_as!(
+        VideoQuery,
+        "
+       SELECT *
+       FROM videos
+       WHERE video_id = $1
+       ",
+        vid
+    )
+    .fetch_one(pool)
+    .await
+    .unwrap()
+}
+pub async fn get_all_videos_db(pool: &PgPool) -> Vec<VideoQuery> {
+    sqlx::query_as!(
+        VideoQuery,
+        "
+        SELECT *
+        FROM videos
+        "
+    )
+    .fetch_all(pool)
+    .await
+    .unwrap()
+}
+pub async fn delete_all_videos_db(pool: &PgPool) -> String {
+    let deltetion = sqlx::query!(
+        "
+        DELETE FROM videos
+        "
+    )
+    .execute(pool)
+    .await
+    .unwrap()
+    .rows_affected();
+
+    format!("{deltetion} videos deleted").to_string()
+}

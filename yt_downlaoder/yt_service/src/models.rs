@@ -1,5 +1,5 @@
 use actix_web::web;
-use chrono::NaiveDate;
+use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -27,7 +27,7 @@ pub struct VideoQuery {
     pub title: String,
     pub url: String,
     pub thumbnail_url: String,
-    pub query_time: Option<NaiveDate>,
+    pub query_time: Option<NaiveDateTime>,
     pub user_id: i32,
     pub video_id: String,
     pub size: i32,
