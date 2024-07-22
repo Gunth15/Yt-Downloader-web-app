@@ -8,7 +8,7 @@ pub struct FetchMeta {
     pub url: String,
     pub thumbnail_url: String,
     pub video_id: String,
-    pub size: i32,
+    pub size: i64,
 }
 impl From<web::Json<FetchMeta>> for FetchMeta {
     fn from(fetched: web::Json<FetchMeta>) -> Self {
@@ -30,7 +30,7 @@ pub struct VideoQuery {
     pub query_time: Option<NaiveDateTime>,
     pub user_id: i32,
     pub video_id: String,
-    pub size: i32,
+    pub size: i64,
 }
 impl From<web::Json<VideoQuery>> for VideoQuery {
     fn from(video_query: web::Json<VideoQuery>) -> Self {

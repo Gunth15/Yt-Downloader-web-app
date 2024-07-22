@@ -41,7 +41,7 @@ pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtD
         url: "".to_string(),
         thumbnail_url,
         video_id: video_id.to_string(),
-        size,
+        size: i64::try_from(size).expect("Youtube video to large buffer overflow (Design error)"),
     }))
 }
 

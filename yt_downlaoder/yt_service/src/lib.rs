@@ -1,5 +1,6 @@
 //redeclrarations
 pub mod dbscript;
+pub mod errors;
 pub mod handlers;
 pub mod models;
 pub mod ytscripts;

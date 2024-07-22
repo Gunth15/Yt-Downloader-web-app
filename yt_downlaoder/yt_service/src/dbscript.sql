@@ -7,7 +7,7 @@ CREATE TABLE videos (
   thumbnail_url VARCHAR(250) NOT NULL,
   query_time TIMESTAMP,
   user_id INT NOT NULL,
-  size INT NOT NULL
+  size BIGINT NOT NULL 
 );
 
 GRANT ALL PRIVILEGES on table videos to yt;
