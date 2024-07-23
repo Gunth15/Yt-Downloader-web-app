@@ -10,11 +10,6 @@ pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtD
     //NOTE: This does not take url's. it takes request in the form of v=<id> or just the id
     let path_url = path.into_inner();
 
-    let video_id: String = match path_url.split_once('=') {
-        Some((_, video_id)) => video_id.to_string(),
-        None => return Err(YtDlErrors::DlError("Invalid url".to_string())),
-    };
-
     //query containts image url and title of file
     let mut query = pytube_wrpr::download_n_fetch(&path_url)?;
 
@@ -40,7 +35,7 @@ pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtD
         title: title.to_string(),
         url: "".to_string(),
         thumbnail_url,
-        video_id: video_id.to_string(),
+        video_id: path_url.to_string(),
         size: i64::try_from(size).expect("Youtube video to large buffer overflow (Design error)"),
     }))
 }

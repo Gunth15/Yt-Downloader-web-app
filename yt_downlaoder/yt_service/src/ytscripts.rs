@@ -10,7 +10,7 @@ pub async fn download_video_yt(video_req: VideoRequest) -> Result<FetchMeta, YtM
     let url = video_req.url;
     let id = url.split_once("v=").unwrap().1.to_string();
     let client_ip = env::var("CLIENT_PORT").unwrap();
-    let client_url = format!("{client_ip}/download/{id}");
+    let client_url = format!("http://{client_ip}/download/{id}");
 
     let client = awc::Client::default();
 
@@ -26,7 +26,7 @@ pub async fn delete_video_yt(vid: &str) -> Result<String, YtManErr> {
     dotenv().ok();
 
     let client_ip = env::var("CLIENT_PORT").unwrap();
-    let client_url = format!("{client_ip}/delete/{vid}");
+    let client_url = format!("http://{client_ip}/delete/{vid}");
 
     let client = awc::Client::default();
     let resp = client
@@ -44,7 +44,7 @@ pub async fn delete_all_yt() -> Result<String, YtManErr> {
     dotenv().ok();
 
     let client_ip = env::var("CLIENT_PORT").unwrap();
-    let client_url = format!("{client_ip}/delete/!!");
+    let client_url = format!("http://{client_ip}/delete/!!");
 
     let client = awc::Client::default();
     let resp = client

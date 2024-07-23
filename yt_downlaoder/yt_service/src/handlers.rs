@@ -37,3 +37,65 @@ pub async fn delete_all_videos(app_data: web::Data<AppData>) -> Result<HttpRespo
     let res = delete_all_videos_db(&app_data.db).await.unwrap();
     Ok(HttpResponse::Ok().json(&res))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use actix_web::http::StatusCode;
+    use dotenv::dotenv;
+    use sqlx::PgPool;
+    use std::env;
+    #[actix_rt::test]
+    async fn create_video_test() {
+        dotenv().ok();
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL is not set in .env file");
+
+        let pool = PgPool::connect(&database_url).await.unwrap();
+
+        let app_data: web::Data<AppData> = web::Data::new(AppData { db: pool });
+        let uid = web::Path::from(1);
+        let request: web::Json<VideoRequest> = web::Json(VideoRequest {
+            url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ".to_string(),
+        });
+
+        let res = create_video(app_data, uid, request).await.unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+    }
+    #[actix_rt::test]
+    async fn delete_video_test() {
+        dotenv().ok();
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL is not set in .env file");
+
+        let pool = PgPool::connect(&database_url).await.unwrap();
+
+        let app_data: web::Data<AppData> = web::Data::new(AppData { db: pool });
+        let vid = web::Path::from("v=dQw4w9WgXcQ".to_string());
+
+        let res = delete_video(app_data, vid).await.unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+    }
+    #[actix_rt::test]
+    async fn get_all_videos_test() {
+        dotenv().ok();
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL is not set in .env file");
+
+        let pool = PgPool::connect(&database_url).await.unwrap();
+
+        let app_data: web::Data<AppData> = web::Data::new(AppData { db: pool });
+
+        let res = delete_all_videos(app_data).await.unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+    }
+    #[actix_rt::test]
+    async fn delete_all_videos_test() {
+        dotenv().ok();
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL is not set in .env file");
+
+        let pool = PgPool::connect(&database_url).await.unwrap();
+
+        let app_data: web::Data<AppData> = web::Data::new(AppData { db: pool });
+
+        let res = get_all_videos(app_data).await.unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+    }
+}
