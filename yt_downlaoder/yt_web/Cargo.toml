@@ -6,3 +6,13 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+serde = {version="*",features=["derive"]}
+serde_json = "*"
+actix-web = "*"
+#Db time 
+chrono = {version = "0.4.22",features=["serde"]}
+
+dotenv = "*"
+awc = "3.5.0"
+sqlx = {version = "0.6.2", default_features = false, features = ["postgres","runtime-tokio-native-tls","macros","chrono"]}
+tera = "*"
