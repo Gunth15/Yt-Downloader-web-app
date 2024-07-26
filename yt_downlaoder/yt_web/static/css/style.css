@@ -1,0 +1,18 @@
+body {
+  background-color: #433F3E;
+  font-style: Verdana;
+  color: white;
+}
+
+.navbar {
+  background: gray;
+}
+.navbar div {
+  background: #595250;
+}
+
+.center {
+  text-align: center;
+}
+
+/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,21 @@
+$font: Verdana;
+$bgc: #433F3E;
+$nav-block-color: #595250;
+$fcolor: white;
+
+body {
+  background-color: $bgc;
+  font-style: $font;
+  color: $fcolor;
+}
+
+.navbar {
+  background: gray;
+  div {
+    background: $nav-block-color;
+  }
+}
+
+.center {
+ text-align: center; 
+}
