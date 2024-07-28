@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Youtube Dl: Downloads</title>
+  <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+  <h1>Downloaded Videos</h1>
+  {% for video in video_list%}
+  <div>
+    <img src="{{% video.thumbnail_url %}}" alt="No Image Available">
+    <a href="{{% video.url %}}">{{ video.title }}</a>
+    <form method="delete" action="/delete/{{% video.video_id %}}">
+      <label for="del">Delete video</label>
+      <input type="submit" name="del">
+    </form>
+    Downloaded by {{ video.user_id }} at {{ video.query_time }}
+    With size {{ video.size }}
+  </div>
+  {% endfor %}
+</body>
+
+</html>

@@ -10,11 +10,17 @@
 
 <body>
   <div class="nav">
+    {% if logged_in %}
     <div>
-      Login
+      <a href="downloads.html">videos</a>
     </div>
+    {% else %}
     <div>
-      New User
+      <a href="login.html">login</a>
+    </div>
+    {% endif %}
+    <div>
+      <a href="new-user.html">Create new user</a>
     </div>
   </div>
   <div class="center">
