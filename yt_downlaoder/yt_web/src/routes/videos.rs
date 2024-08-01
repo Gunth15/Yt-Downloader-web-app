@@ -7,7 +7,7 @@ pub fn video_routes(cfg: &mut web::ServiceConfig) {
             .route("/downloads", web::get().to(get_videos_handler))
             .route("/delete/{video_id}", web::delete().to(delete_video_hadler))
             .route(
-                "/deletes/ALL!VIDEOS!",
+                "/delete/ALL!VIDEOS!",
                 web::delete().to(delete_all_videos_handler),
             ),
     );

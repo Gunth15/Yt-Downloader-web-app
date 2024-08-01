@@ -4,8 +4,8 @@ use actix_web::web;
 pub fn update_user_routes(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope("update")
-            .route("/{user_id}", web::get().to(get_update_user))
-            .route("/{user_id}", web::put().to(put_update_user)),
+            .route("", web::get().to(get_update_user))
+            .route("", web::put().to(put_update_user)),
     );
 }
 pub fn delete_user_routes(cfg: &mut web::ServiceConfig) {

@@ -13,9 +13,18 @@ pub struct NewUser {
     pub password: String,
 }
 pub struct UpdateUser {
-    pub user_id: i32,
-    pub username: Option<String>,
-    pub password: Option<String>,
+    pub username: String,
+    pub new_password: String,
+    pub old_password: String,
+}
+impl From<web::Form<UpdateUser>> for UpdateUser {
+    fn from(form: web::Form<UpdateUser>) -> Self {
+        UpdateUser {
+            username: form.username.clone(),
+            old_password: form.old_password.clone(),
+            new_password: form.new_password.clone(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

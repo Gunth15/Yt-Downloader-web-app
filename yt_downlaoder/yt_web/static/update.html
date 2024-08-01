@@ -4,22 +4,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>YoutubeDl: login</title>
+  <title>YoutubeDl: Update</title>
   <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
-  <h1>Login</h1>
+  <h1>Update</h1>
+  {% if fail %}
+  <h2>Failed: {% fail_msg %}</h2>
+  {% endif %}
   <div>
     <img src="Images/ytdl.png" alt="YOUTUBE DL">
-    <form method="post" action="/login">
+    <form method="post" action="/update">
       <label for="uname">Username:</label>
       <input type="text" name="uname" value="">
-      <label for="pword">New Password:</label>
-      <input type="password" name="npword" value="">
-      <label for="pword">Old Password:</label>
-      <input type="password" name="opword" value="">
-      <input type="submit" value="Login">
+      <label for="pword">Password:</label>
+      <input type="password" name="pword" value="">
+      <input type="submit" value="Update Login">
     </form>
   </div>
 </body>

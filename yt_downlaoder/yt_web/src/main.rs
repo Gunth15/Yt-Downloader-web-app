@@ -13,7 +13,7 @@ async fn main() -> std::io::Result<()> {
     println!("Listening on port {:?}", &host_port);
     // Database server from .env file
     let db_addr = env::var("DATABASE_URL").expect("Database url is not set in .env file");
-    let db_pool = PgPool::connect(&db_addr).await.unwrap();
+    let db_pool = sqlx::postgres::PgPool::connect(&db_addr).await.unwrap();
 
     let shared_dbpool = web::Data::new(AppData { db: db_pool });
 
