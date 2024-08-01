@@ -32,11 +32,33 @@ pub async fn put_update_user(
     };
     HttpResponse::Ok().body(resp)
 }
-pub async fn get_delete_user() -> HttpResponse {
-    HttpResponse::Ok()
+pub async fn get_delete_user(tmpl: web::Data<tera::Tera>) -> HttpResponse {
+    let mut ctx = tera::Context::new();
+    ctx.insert("fail", "false");
+    ctx.insert("fail_msg", "");
+
+    let res = tmpl.render("delete.html", &ctx).unwrap();
+    HttpResponse::Ok().body(res)
 }
-pub async fn delete_user() -> HttpResponse {
-    HttpResponse::Ok()
+pub async fn delete_user(
+    delete_usr: web::Form<UpdateUser>,
+    app_data: web::Data<AppData>,
+    tmpl: web::Data<tera::Tera>,
+) -> HttpResponse {
+    let old_usr = get_user_db(&app_data.db, &delete_usr.username).await;
+    let resp = if &delete_usr.old_password == &old_usr.password {
+        delete_user_db(&app_data.db, &delete_usr.username).await;
+    } else {
+        let mut ctx = tera::Context::new();
+        ctx.insert("fail", "true");
+        ctx.insert(
+            "fail_msg",
+            "current password does not match entered password",
+        );
+
+        tmpl.render("delete.html", &ctx).unwrap();
+    };
+    HttpResponse::Ok().body(resp)
 }
 pub async fn get_new_user() -> HttpResponse {
     HttpResponse::Ok()
