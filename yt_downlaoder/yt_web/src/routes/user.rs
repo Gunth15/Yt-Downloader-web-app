@@ -1,4 +1,4 @@
-use crate::handlers::*;
+use crate::handlers::user::*;
 use actix_web::web;
 
 pub fn update_user_routes(cfg: &mut web::ServiceConfig) {

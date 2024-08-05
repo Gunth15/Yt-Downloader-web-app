@@ -1,10 +1,10 @@
 use crate::dbscripts::*;
-use crate::models::UpdateUser;
+use crate::models::{NewUser, UpdateUser};
 use crate::state::AppData;
 use actix_web::{web, HttpResponse};
 
 //update user creadentials based and validate with existing user info
-pub fn get_update_user(tmpl: web::Data<tera::Tera>) -> HttpResponse {
+pub async fn get_update_user(tmpl: web::Data<tera::Tera>) -> HttpResponse {
     let mut ctx = tera::Context::new();
     ctx.insert("fail", "false");
     ctx.insert("fail_msg", "");
@@ -60,9 +60,11 @@ pub async fn delete_user(
     };
     HttpResponse::Ok().body(resp)
 }
-pub async fn get_new_user() -> HttpResponse {
-    HttpResponse::Ok()
+pub async fn get_new_user(tmpl: web::Data<tera::Tera>) -> HttpResponse {
+    let resp = tmpl.render("new-user.html", &tera::Context::new()).unwrap();
+    HttpResponse::Ok().body(resp)
 }
-pub async fn post_new_user() -> HttpResponse {
-    HttpResponse::Ok()
+pub async fn post_new_user(new_user: web::Form<NewUser>, data: web::Data<AppData>) -> HttpResponse {
+    let resp = post_user_db(&data.db, new_user.into()).await;
+    HttpResponse::Ok().body(resp)
 }

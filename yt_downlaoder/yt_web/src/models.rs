@@ -8,10 +8,20 @@ pub struct User {
     pub username: String,
     pub password: String,
 }
+#[derive(Debug, Clone, Deserialize)]
 pub struct NewUser {
     pub username: String,
     pub password: String,
 }
+impl From<web::Form<NewUser>> for NewUser {
+    fn from(form: web::Form<NewUser>) -> Self {
+        NewUser {
+            username: form.username.clone(),
+            password: form.password.clone(),
+        }
+    }
+}
+#[derive(Debug, Clone, Deserialize)]
 pub struct UpdateUser {
     pub username: String,
     pub new_password: String,

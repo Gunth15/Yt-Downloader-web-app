@@ -1,12 +1,20 @@
-use crate::state::AppData;
 use actix_web::{web, HttpResponse};
 use tera::Tera;
 
 //display landing page
-pub fn landing_handler(tmpl: web::Data<Tera>) -> HttpResponse {}
+pub async fn landing_handler(tmpl: web::Data<Tera>) -> HttpResponse {
+    let resp = tmpl.render("landing.html", &tera::Context::new()).unwrap();
+    HttpResponse::Ok().body(resp)
+}
 
 //disply login screen
-pub fn login_handler(tera: web::Data<Tera>) -> HttpResponse {}
+pub async fn login_handler(tmpl: web::Data<Tera>) -> HttpResponse {
+    let resp = tmpl.render("login.html", &tera::Context::new()).unwrap();
+    HttpResponse::Ok().body(resp)
+}
 
 //error 404
-pub fn err_handler(tera: web::Data<Tera>) -> HttpResponse {}
+pub async fn err_handler(tmpl: web::Data<Tera>) -> HttpResponse {
+    let resp = tmpl.render("404.html", &tera::Context::new()).unwrap();
+    HttpResponse::Ok().body(resp)
+}

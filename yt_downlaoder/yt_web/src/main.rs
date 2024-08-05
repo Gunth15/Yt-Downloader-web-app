@@ -2,7 +2,7 @@ use actix_web::{web, App, HttpServer};
 use dotenv::dotenv;
 use std::env;
 use tera::Tera;
-use yt_web::state::AppData;
+use yt_web::{routes::*, state::AppData};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -16,12 +16,14 @@ async fn main() -> std::io::Result<()> {
     let db_pool = sqlx::postgres::PgPool::connect(&db_addr).await.unwrap();
 
     let shared_dbpool = web::Data::new(AppData { db: db_pool });
-
     HttpServer::new(move || {
         let tera = Tera::new(concat!(env!("CARGO_MANIFEST_DIR"), "/static/**/*")).unwrap();
         App::new()
             .app_data(shared_dbpool.clone())
             .app_data(web::Data::new(tera))
+            .configure(user::new_user_routes)
+            .configure(user::delete_user_routes)
+            .configure(user::update_user_routes)
     })
     .bind(&host_port)?
     .run()
