@@ -1,8 +1,9 @@
 use actix_web::web;
+use argon2::{password_hash::Salt, Argon2, PasswordHasher};
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct User {
     pub user_id: i32,
     pub username: String,
@@ -15,9 +16,17 @@ pub struct NewUser {
 }
 impl From<web::Form<NewUser>> for NewUser {
     fn from(form: web::Form<NewUser>) -> Self {
+        let config = Argon2::default();
+        let hash = config
+            .hash_password(
+                form.password.as_bytes(),
+                Salt::from_b64(crate::SALT).unwrap(),
+            )
+            .unwrap()
+            .to_string();
         NewUser {
             username: form.username.clone(),
-            password: form.password.clone(),
+            password: hash.clone(),
         }
     }
 }
@@ -29,10 +38,19 @@ pub struct UpdateUser {
 }
 impl From<web::Form<UpdateUser>> for UpdateUser {
     fn from(form: web::Form<UpdateUser>) -> Self {
+        let config = Argon2::default();
+        let hash = config
+            .hash_password(
+                form.new_password.as_bytes(),
+                Salt::from_b64(crate::SALT).unwrap(),
+            )
+            .unwrap()
+            .to_string();
+
         UpdateUser {
             username: form.username.clone(),
             old_password: form.old_password.clone(),
-            new_password: form.new_password.clone(),
+            new_password: hash.clone(),
         }
     }
 }
@@ -61,7 +79,7 @@ impl From<web::Json<VideoQuery>> for VideoQuery {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct VideoRequest {
     pub url: String,
 }
@@ -71,4 +89,10 @@ impl From<web::Json<VideoRequest>> for VideoRequest {
             url: req.url.clone(),
         }
     }
+}
+#[derive(Debug, Clone, Deserialize)]
+pub struct DlRequest {
+    pub url: String,
+    pub password: String,
+    pub id: i32,
 }

@@ -3,6 +3,8 @@ pub mod handlers;
 pub mod models;
 pub mod routes;
 
+pub const SALT: &str = "HellaSalty";
+
 pub mod state {
     use sqlx::postgres::PgPool;
     pub struct AppData {
@@ -23,6 +25,21 @@ pub mod dbscripts {
             Where username = $1
             ",
             uname
+        )
+        .fetch_one(pg_pool)
+        .await
+        .unwrap()
+    }
+
+    pub async fn get_userid_db(pg_pool: &postgres::PgPool, uid: i32) -> User {
+        sqlx::query_as!(
+            User,
+            "
+            SELECT *
+            FROM users
+            Where  user_id = $1
+            ",
+            uid
         )
         .fetch_one(pg_pool)
         .await
