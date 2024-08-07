@@ -11,7 +11,7 @@ serde_json = "*"
 actix-web = "*"
 #Db time 
 chrono = {version = "0.4.22",features=["serde"]}
-
+argon2 = "*"
 dotenv = "*"
 awc = "3.5.0"
 sqlx = {version = "0.6.2", default_features = false, features = ["postgres","runtime-tokio-native-tls","macros","chrono"]}
