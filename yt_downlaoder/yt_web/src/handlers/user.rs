@@ -2,7 +2,7 @@ use crate::dbscripts::*;
 use crate::models::{NewUser, UpdateUser};
 use crate::state::AppData;
 use actix_web::{web, HttpResponse};
-use argon2::{password_hash::Salt, Argon2, PasswordHasher};
+use argon2::{self, Config};
 
 //update user creadentials based and validate with existing user info
 pub async fn get_update_user(tmpl: web::Data<tera::Tera>) -> HttpResponse {
@@ -20,17 +20,12 @@ pub async fn put_update_user(
 ) -> HttpResponse {
     let old_usr = get_user_db(&app_data.db, &update_usr.username).await;
 
-    let config = Argon2::default();
-    let hash = config
-        .hash_password(
-            update_usr.old_password.as_bytes(),
-            Salt::from_b64(crate::SALT).unwrap(),
-        )
-        .unwrap()
-        .to_string();
+    let config = Config::default();
+    let hash =
+        argon2::hash_encoded(update_usr.old_password.as_bytes(), crate::SALT, &config).unwrap();
 
-    let resp = if &hash == &old_usr.password {
-        update_user_db(&app_data.db, update_usr.into()).await;
+    let resp = if hash == old_usr.password {
+        update_user_db(&app_data.db, update_usr.into()).await
     } else {
         let mut ctx = tera::Context::new();
         ctx.insert("fail", &true);
@@ -39,7 +34,7 @@ pub async fn put_update_user(
             "current password does not match entered password",
         );
 
-        tmpl.render("update.html", &ctx).unwrap();
+        tmpl.render("update.html", &ctx).unwrap()
     };
     HttpResponse::Ok().content_type("text/html").body(resp)
 }
@@ -58,16 +53,12 @@ pub async fn delete_user(
 ) -> HttpResponse {
     let old_usr = get_user_db(&app_data.db, &delete_usr.username).await;
 
-    let config = Argon2::default();
-    let hash = config
-        .hash_password(
-            delete_usr.old_password.as_bytes(),
-            Salt::from_b64(crate::SALT).unwrap(),
-        )
-        .unwrap()
-        .to_string();
-    let resp = if &hash == &old_usr.password {
-        delete_user_db(&app_data.db, &delete_usr.username).await;
+    let config = Config::default();
+    let hash =
+        argon2::hash_encoded(delete_usr.old_password.as_bytes(), crate::SALT, &config).unwrap();
+
+    let resp = if hash == old_usr.password && delete_usr.new_password == delete_usr.old_password {
+        delete_user_db(&app_data.db, &delete_usr.username).await
     } else {
         let mut ctx = tera::Context::new();
         ctx.insert("fail", "true");
@@ -76,7 +67,7 @@ pub async fn delete_user(
             "current password does not match entered password",
         );
 
-        tmpl.render("delete.html", &ctx).unwrap();
+        tmpl.render("delete.html", &ctx).unwrap()
     };
     HttpResponse::Ok().content_type("text/html").body(resp)
 }

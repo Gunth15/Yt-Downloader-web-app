@@ -5,28 +5,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Youtube Downloader</title>
-  <link href="css/style.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
 </head>
 
 <body>
   <div class="nav">
     {% if logged_in %}
     <div>
-      <a href="downloads.html">videos</a>
+      <a href="/downloads">videos</a>
     </div>
     {% else %}
     <div>
-      <a href="login.html">login</a>
+      <a href="/login">login</a>
     </div>
     {% endif %}
     <div>
-      <a href="new-user.html">Create new user</a>
+      <a href="/new">Create new user</a>
     </div>
   </div>
   <div class="center">
     <h1>Download videos to your home server</h1>
     <h2 style="color: red;">{{ Error }}</h2>
-    <img src="Images/ytdl.png" alt="YOUTUBE DL">
+    <img src="static/Images/ytdl.png" alt="YOUTUBE DL">
     {% if logged_in %}
     <form method="post" action="/download/">
       <label for="video_id">video_id</label>

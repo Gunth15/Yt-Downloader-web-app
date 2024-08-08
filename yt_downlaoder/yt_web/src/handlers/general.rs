@@ -3,7 +3,11 @@ use tera::Tera;
 
 //display landing page
 pub async fn landing_handler(tmpl: web::Data<Tera>) -> HttpResponse {
-    let resp = tmpl.render("landing.html", &tera::Context::new()).unwrap();
+    let mut ctx = tera::Context::new();
+    ctx.insert("logged_in", &false);
+    ctx.insert("Error", "");
+
+    let resp = tmpl.render("landing.html", &ctx).unwrap();
     HttpResponse::Ok().content_type("text/html").body(resp)
 }
 

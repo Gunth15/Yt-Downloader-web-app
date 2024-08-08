@@ -5,21 +5,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>YoutubeDl: Update</title>
-  <link href="css/style.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
 </head>
 
 <body>
   <h1>Update</h1>
   {% if fail %}
-  <h2>Failed: { fail_msg }</h2>
+  <h2>Failed: {{ fail_msg }}</h2>
   {% endif %}
   <div>
-    <img src="Images/ytdl.png" alt="YOUTUBE DL">
+    <img src="static/Images/ytdl.png" alt="YOUTUBE DL">
     <form method="post" action="/update">
       <label for="username">Username:</label>
       <input type="text" name="username" value="">
       <label for="password">New Password:</label>
-      <input type="password" name="password" value="">
+      <input type="password" name="new_password" value="">
       <label for="old_passowrd">Old Password:</label>
       <input type="password" name="old_password" value="">
       <input type="submit" value="Login">

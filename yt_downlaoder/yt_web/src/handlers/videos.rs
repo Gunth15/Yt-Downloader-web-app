@@ -2,7 +2,7 @@ use crate::dbscripts::get_userid_db;
 use crate::models::{DlRequest, VideoQuery, VideoRequest};
 use crate::state::AppData;
 use actix_web::{web, HttpResponse};
-use argon2::{password_hash::Salt, Argon2, PasswordHasher};
+use argon2::{self, Config};
 use tera::Tera;
 
 pub async fn get_videos_handler(tmpl: web::Data<Tera>) -> HttpResponse {
@@ -54,18 +54,12 @@ pub async fn post_video_handler(
 
     let uid = to_dl.id;
 
-    let config = Argon2::default();
-    let hash = config
-        .hash_password(
-            to_dl.password.as_bytes(),
-            Salt::from_b64(crate::SALT).unwrap(),
-        )
-        .unwrap()
-        .to_string();
+    let config = Config::default();
+    let hash = argon2::hash_encoded(to_dl.password.as_bytes(), crate::SALT, &config).unwrap();
 
     // verify password
     let user = get_userid_db(&app_data.db, uid).await;
-    let resp = if &hash == &user.password {
+    let resp = if hash == user.password {
         let cli = awc::Client::default();
         let url = format!("127.0.0.1:3000/videos/new/{uid}");
         let req = cli

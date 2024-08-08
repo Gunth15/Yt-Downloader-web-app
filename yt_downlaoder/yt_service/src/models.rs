@@ -38,7 +38,7 @@ impl From<web::Json<VideoQuery>> for VideoQuery {
             title: video_query.title.clone(),
             url: video_query.url.clone(),
             thumbnail_url: video_query.thumbnail_url.clone(),
-            query_time: video_query.query_time.clone(),
+            query_time: video_query.query_time,
             user_id: video_query.user_id,
             video_id: video_query.video_id.clone(),
             size: video_query.size,
@@ -54,7 +54,7 @@ impl VideoQuery {
             query_time: None,
             user_id: uid,
             video_id: meta.video_id.clone(),
-            size: meta.size.clone(),
+            size: meta.size,
         }
     }
 }

@@ -5,22 +5,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>YoutubeDl: Delete?</title>
-  <link href="css/style.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
 </head>
 
 <body>
   <h1>You sure you want to remove your account?</h1>
   <h2>You download history wont be effected</h2>
   {% if fail %}
-  <h2>Failed: { fail_msg }</h2>
+  <h2>Failed: {{ fail_msg }} </h2>
   {% endif %}
   <div>
-    <img src="Images/ytdl.png" alt="YOUTUBE DL">
+    <img src="static/Images/ytdl.png" alt="YOUTUBE DL">
     <form method="post" action="/delete">
       <label for="username">Username:</label>
       <input type="text" name="username" value="">
-      <label for="password"> Password:</label>
-      <input type="password" name="password" value="">
+      <label for="new_password">New Password:</label>
+      <input type="password" name="new_password" value="">
+      <label for="old_passowrd">Old Password:</label>
+      <input type="password" name="old_password" value="">
       <input type="submit" value="Login">
     </form>
   </div>

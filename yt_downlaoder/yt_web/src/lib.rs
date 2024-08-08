@@ -3,7 +3,7 @@ pub mod handlers;
 pub mod models;
 pub mod routes;
 
-pub const SALT: &str = "HellaSalty";
+pub const SALT: &[u8] = b"HellaSalty";
 
 pub mod state {
     use sqlx::postgres::PgPool;
@@ -56,7 +56,7 @@ pub mod dbscripts {
             user.username,
             user.password
         )
-        .fetch_one(pg_pool)
+        .execute(pg_pool)
         .await
         .unwrap();
 
@@ -73,7 +73,7 @@ pub mod dbscripts {
             user.new_password,
             user.username
         )
-        .fetch_one(pg_pool)
+        .execute(pg_pool)
         .await
         .unwrap();
 
@@ -89,7 +89,7 @@ pub mod dbscripts {
             ",
             uname
         )
-        .fetch_one(pg_pool)
+        .execute(pg_pool)
         .await
         .unwrap();
 

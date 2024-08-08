@@ -1,5 +1,5 @@
 use actix_web::web;
-use argon2::{password_hash::Salt, Argon2, PasswordHasher};
+use argon2::{self, Config};
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
@@ -16,14 +16,8 @@ pub struct NewUser {
 }
 impl From<web::Form<NewUser>> for NewUser {
     fn from(form: web::Form<NewUser>) -> Self {
-        let config = Argon2::default();
-        let hash = config
-            .hash_password(
-                form.password.as_bytes(),
-                Salt::from_b64(crate::SALT).unwrap(),
-            )
-            .unwrap()
-            .to_string();
+        let config = Config::default();
+        let hash = argon2::hash_encoded(form.password.as_bytes(), crate::SALT, &config).unwrap();
         NewUser {
             username: form.username.clone(),
             password: hash.clone(),
@@ -38,15 +32,9 @@ pub struct UpdateUser {
 }
 impl From<web::Form<UpdateUser>> for UpdateUser {
     fn from(form: web::Form<UpdateUser>) -> Self {
-        let config = Argon2::default();
-        let hash = config
-            .hash_password(
-                form.new_password.as_bytes(),
-                Salt::from_b64(crate::SALT).unwrap(),
-            )
-            .unwrap()
-            .to_string();
-
+        let config = Config::default();
+        let hash =
+            argon2::hash_encoded(form.new_password.as_bytes(), crate::SALT, &config).unwrap();
         UpdateUser {
             username: form.username.clone(),
             old_password: form.old_password.clone(),
@@ -71,7 +59,7 @@ impl From<web::Json<VideoQuery>> for VideoQuery {
             title: video_query.title.clone(),
             url: video_query.url.clone(),
             thumbnail_url: video_query.thumbnail_url.clone(),
-            query_time: video_query.query_time.clone(),
+            query_time: video_query.query_time,
             user_id: video_query.user_id,
             video_id: video_query.video_id.clone(),
             size: video_query.size,
