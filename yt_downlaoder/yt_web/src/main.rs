@@ -16,7 +16,6 @@ async fn main() -> std::io::Result<()> {
     // Database server from .env file
     let db_addr = env::var("DATABASE_URL").expect("Database url is not set in .env file");
     let db_pool = sqlx::postgres::PgPool::connect(&db_addr).await.unwrap();
-
     let shared_dbpool = web::Data::new(AppData { db: db_pool });
     HttpServer::new(move || {
         let tera = Tera::new(concat!(env!("CARGO_MANIFEST_DIR"), "/static/html/**/*")).unwrap();

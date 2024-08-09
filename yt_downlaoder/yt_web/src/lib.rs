@@ -1,4 +1,5 @@
 //redeclarations
+pub mod errors;
 pub mod handlers;
 pub mod models;
 pub mod routes;
@@ -13,11 +14,14 @@ pub mod state {
 }
 
 pub mod dbscripts {
-    use crate::models::{NewUser, UpdateUser, User};
+    use crate::{
+        errors::WebErrors,
+        models::{NewUser, UpdateUser, User},
+    };
     use sqlx::postgres;
 
-    pub async fn get_user_db(pg_pool: &postgres::PgPool, uname: &str) -> User {
-        sqlx::query_as!(
+    pub async fn get_user_db(pg_pool: &postgres::PgPool, uname: &str) -> Result<User, WebErrors> {
+        Ok(sqlx::query_as!(
             User,
             "
             SELECT *
@@ -27,12 +31,11 @@ pub mod dbscripts {
             uname
         )
         .fetch_one(pg_pool)
-        .await
-        .unwrap()
+        .await?)
     }
 
-    pub async fn get_userid_db(pg_pool: &postgres::PgPool, uid: i32) -> User {
-        sqlx::query_as!(
+    pub async fn get_userid_db(pg_pool: &postgres::PgPool, uid: i32) -> Result<User, WebErrors> {
+        Ok(sqlx::query_as!(
             User,
             "
             SELECT *
@@ -42,11 +45,13 @@ pub mod dbscripts {
             uid
         )
         .fetch_one(pg_pool)
-        .await
-        .unwrap()
+        .await?)
     }
 
-    pub async fn post_user_db(pg_pool: &postgres::PgPool, user: NewUser) -> String {
+    pub async fn post_user_db(
+        pg_pool: &postgres::PgPool,
+        user: NewUser,
+    ) -> Result<String, WebErrors> {
         sqlx::query!(
             "
             INSERT INTO users
@@ -57,13 +62,15 @@ pub mod dbscripts {
             user.password
         )
         .execute(pg_pool)
-        .await
-        .unwrap();
+        .await?;
 
-        "User added".to_string()
+        Ok("User added".to_string())
     }
 
-    pub async fn update_user_db(pg_pool: &postgres::PgPool, user: UpdateUser) -> String {
+    pub async fn update_user_db(
+        pg_pool: &postgres::PgPool,
+        user: UpdateUser,
+    ) -> Result<String, WebErrors> {
         sqlx::query!(
             "
             UPDATE users
@@ -74,13 +81,15 @@ pub mod dbscripts {
             user.username
         )
         .execute(pg_pool)
-        .await
-        .unwrap();
+        .await?;
 
-        "Updated".to_string()
+        Ok("Updated".to_string())
     }
 
-    pub async fn delete_user_db(pg_pool: &postgres::PgPool, uname: &str) -> String {
+    pub async fn delete_user_db(
+        pg_pool: &postgres::PgPool,
+        uname: &str,
+    ) -> Result<String, WebErrors> {
         sqlx::query!(
             "
             DELETE 
@@ -90,9 +99,8 @@ pub mod dbscripts {
             uname
         )
         .execute(pg_pool)
-        .await
-        .unwrap();
+        .await?;
 
-        "Deleted".to_string()
+        Ok("Deleted".to_string())
     }
 }
