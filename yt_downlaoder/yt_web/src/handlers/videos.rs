@@ -16,7 +16,7 @@ pub async fn get_videos_handler(tmpl: web::Data<Tera>) -> Result<HttpResponse, W
     let client_port = env::var("CLIENT_PORT").expect("Client port not set in .env file");
 
     let req = cli
-        .get(format!("{client_port}/videos"))
+        .get(format!("http://{client_port}/videos"))
         .send()
         .await?
         .body()
@@ -37,7 +37,7 @@ pub async fn delete_video_handler(video_id: web::Path<String>) -> Result<HttpRes
 
     let cli = awc::Client::default();
     let client_port = env::var("CLIENT_PORT").expect("Client port not set in .env file");
-    let url = format!("{client_port}/videos/{video_id}");
+    let url = format!("http://{client_port}/videos/{video_id}");
     let req = cli.delete(url).send().await?.body().await.unwrap();
 
     let resp = std::str::from_utf8(&req).unwrap().to_string();
@@ -48,7 +48,7 @@ pub async fn delete_all_videos_handler() -> Result<HttpResponse, WebErrors> {
 
     let cli = awc::Client::default();
     let client_port = env::var("CLIENT_PORT").expect("Client port not set in .env file");
-    let url = format!("{client_port}/videos/delete/ALL!");
+    let url = format!("http://{client_port}/videos/delete/ALL!");
     let req = cli.delete(url).send().await.unwrap().body().await.unwrap();
 
     let resp = std::str::from_utf8(&req).unwrap().to_string();
@@ -74,7 +74,8 @@ pub async fn post_video_handler(
     let resp = if hash == user.password {
         let cli = awc::Client::default();
         let client_port = env::var("CLIENT_PORT").expect("Client port not set in .env file");
-        let url = format!("{client_port}/videos/new/{uid}");
+        let url = format!("http://{client_port}/videos/new/{uid}");
+        println!("{url}");
         let req = cli
             .post(url)
             .send_json(&video_req)
@@ -85,10 +86,11 @@ pub async fn post_video_handler(
         std::str::from_utf8(&req).unwrap().to_string()
     } else {
         let mut ctx = tera::Context::default();
-        ctx.insert("Error", "Wrong password");
         ctx.insert("logged_in", &true);
+        ctx.insert("Error", "Wrong password");
+        ctx.insert("id", &to_dl.id);
 
-        tmpl.render("landing.html", &ctx).unwrap()
+        tmpl.render("landing.html", &ctx)?
     };
     Ok(HttpResponse::Ok().content_type("text/html").body(resp))
 }

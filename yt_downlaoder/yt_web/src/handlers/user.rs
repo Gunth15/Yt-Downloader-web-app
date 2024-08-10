@@ -73,13 +73,27 @@ pub async fn delete_user(
     Ok(HttpResponse::Ok().content_type("text/html").body(resp))
 }
 pub async fn get_new_user(tmpl: web::Data<tera::Tera>) -> Result<HttpResponse, WebErrors> {
+    let mut ctx = tera::Context::new();
+    ctx.insert("fail", &false);
+    ctx.insert("fail_msg", "");
+
     let resp = tmpl.render("new-user.html", &tera::Context::new())?;
     Ok(HttpResponse::Ok().content_type("text/html").body(resp))
 }
 pub async fn post_new_user(
     new_user: web::Form<NewUser>,
     data: web::Data<AppData>,
+    tmpl: web::Data<tera::Tera>,
 ) -> Result<HttpResponse, WebErrors> {
-    let resp = post_user_db(&data.db, new_user.into()).await?;
+    let resp = match post_user_db(&data.db, new_user.into()).await {
+        Ok(msg) => msg,
+        Err(_) => {
+            let mut ctx = tera::Context::new();
+            ctx.insert("fail", &true);
+            ctx.insert("fail_msg", "Something went wrong. Try another username");
+
+            tmpl.render("new-user.html", &ctx).unwrap()
+        }
+    };
     Ok(HttpResponse::Ok().content_type("text/html").body(resp))
 }

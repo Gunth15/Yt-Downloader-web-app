@@ -12,7 +12,7 @@
   <div class="nav">
     {% if logged_in %}
     <div>
-      <a href="/downloads">videos</a>
+      <a href="videos/downloads">videos</a>
     </div>
     {% else %}
     <div>
@@ -28,12 +28,13 @@
     <h2 style="color: red;">{{ Error }}</h2>
     <img src="static/Images/ytdl.png" alt="YOUTUBE DL">
     {% if logged_in %}
-    <form method="post" action="/download/">
+    <form method="post" action="videos/download">
       <label for="video_id">video_id</label>
-      <input type="url" name="video_id" value="">
+      <input type="url" name="url" value="">
       <label for="password">password</label>
       <input type="password" name="password" value="">
       <input type="hidden" name="id" value="{{ id }}">
+      <input type="submit" name="Download Video">
     </form>
     {% endif %}
   </div>

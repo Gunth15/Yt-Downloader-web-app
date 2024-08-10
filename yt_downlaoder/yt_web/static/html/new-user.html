@@ -10,6 +10,9 @@
 
 <body>
   <h2>Create new User</h2>
+  {% if fail %}
+  <h2>Failed: {{ fail_msg }}</h2>
+  {% endif %}
   <form method="post" action="/new">
     <label for="username">User name</label>
     <input type="text" name="username" value="">

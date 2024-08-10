@@ -10,16 +10,17 @@
 
 <body>
   <h1>Login</h1>
+  {% if fail %}
+  <h2>Failed: {{ fail_msg }}</h2>
+  {% endif %}
   <div>
     <img src="static/Images/ytdl.png" alt="YOUTUBE DL">
-    <form method="post" action="/login/now">
-      <label for="uname">Username:</label>
-      <input type="text" name="uname" value="">
-      <label for="pword">New Password:</label>
-      <input type="password" name="npword" value="">
-      <label for="pword">Old Password:</label>
-      <input type="password" name="opword" value="">
-      <input type="submit" value="Login">
+    <form method="post" action="/login">
+      <label for="username">Username:</label>
+      <input type="text" name="username" value="">
+      <label for="password">Password:</label>
+      <input type="password" name="password" value="">
+      <input type="submit" name="Login">
     </form>
   </div>
 </body>

@@ -71,6 +71,6 @@ impl From<TeraErr> for WebErrors {
 }
 impl From<SendRequestError> for WebErrors {
     fn from(err: SendRequestError) -> Self {
-        WebErrors::TemplErr(err.to_string())
+        WebErrors::YtServErr(err.to_string())
     }
 }
