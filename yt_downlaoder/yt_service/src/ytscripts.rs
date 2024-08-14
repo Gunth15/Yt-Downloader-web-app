@@ -11,6 +11,7 @@ pub async fn download_video_yt(video_req: VideoRequest) -> Result<FetchMeta, YtM
     let id = url.split_once("v=").unwrap().1.to_string();
     let client_ip = env::var("CLIENT_PORT").unwrap();
     let client_url = format!("http://{client_ip}/download/{id}");
+    println!("{client_url}");
 
     let client = awc::Client::default();
 

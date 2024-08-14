@@ -1,4 +1,5 @@
 use actix_web::error::Error as ActErr;
+use actix_web::ResponseError;
 use actix_web::{error, http::StatusCode, HttpResponse};
 use awc::error::SendRequestError;
 use serde::Serialize;
@@ -51,7 +52,7 @@ impl error::ResponseError for WebErrors {
 }
 impl std::fmt::Display for WebErrors {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}", self)
+        write!(f, "{}", self.error_response())
     }
 }
 impl From<SqlxErr> for WebErrors {

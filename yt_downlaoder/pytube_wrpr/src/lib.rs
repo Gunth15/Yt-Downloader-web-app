@@ -1,5 +1,6 @@
 use pyo3::prelude::*;
 use std::env;
+use std::fmt;
 use std::vec::Vec;
 
 pub fn download_n_fetch(url: &str) -> Result<Vec<String>, Error> {
@@ -40,9 +41,17 @@ pub enum Error {
     MissingScript(String),
     PytubeErr(String),
 }
+impl Error {
+    fn err_response(&self) -> String {
+        match self {
+            Error::MissingScript(msg) => msg.to_string(),
+            Error::PytubeErr(msg) => msg.to_string(),
+        }
+    }
+}
 impl std::fmt::Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-        write!(f, "{}", self)
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        write!(f, "{}", self.err_response())
     }
 }
 

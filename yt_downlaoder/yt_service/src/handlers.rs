@@ -39,6 +39,7 @@ pub async fn delete_all_videos(app_data: web::Data<AppData>) -> Result<HttpRespo
 }
 
 #[cfg(test)]
+//Test need to be ran twice. Only 2 or 1 test should pass most of the time.
 mod tests {
     use super::*;
     use actix_web::http::StatusCode;

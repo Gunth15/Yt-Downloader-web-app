@@ -7,11 +7,10 @@ use std::fs;
 
 //downloads videos to downloads folder and returns json metas data of video
 pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtDlErrors> {
-    //NOTE: This does not take url's. it takes request in the form of v=<id> or just the id
-    let path_url = path.into_inner();
-
+    let id = path.into_inner();
+    let url = format!("youtube.com/watch?v={id}");
     //query containts image url and title of file
-    let mut query = pytube_wrpr::download_n_fetch(&path_url)?;
+    let mut query = pytube_wrpr::download_n_fetch(&url)?;
 
     let thumbnail_url = query.remove(0);
     let title = {
@@ -33,10 +32,10 @@ pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtD
 
     Ok(HttpResponse::Ok().json(FetchMeta {
         title: title.to_string(),
-        url: "".to_string(),
+        url: url.to_string(),
         thumbnail_url,
-        video_id: path_url.to_string(),
-        size: i64::try_from(size).expect("Youtube video to large buffer overflow (Design error)"),
+        video_id: id.to_string(),
+        size: i64::try_from(size).expect("Youtube video too large buffer overflow (Design error)"),
     }))
 }
 

@@ -1,3 +1,5 @@
+use core::fmt;
+
 use actix_web::error::Error as AcErr;
 use actix_web::{error, http::StatusCode, HttpResponse};
 use awc::error::SendRequestError;
@@ -41,8 +43,8 @@ impl error::ResponseError for YtManErr {
     }
 }
 impl std::fmt::Display for YtManErr {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}", self)
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        write!(f, "{}", self.err_response())
     }
 }
 impl From<SqlxErr> for YtManErr {

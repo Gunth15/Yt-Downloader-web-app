@@ -5,14 +5,14 @@ use std::fmt;
 
 use actix_web::Error as ActixError;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub enum YtDlErrors {
     ActixError(String),
     DlError(String),
     FileError(String),
 }
 impl YtDlErrors {
-    fn error_response(&self) -> String {
+    fn err_response(&self) -> String {
         match self {
             YtDlErrors::ActixError(msg) => {
                 println!("Server error occured. {:?}", msg);
@@ -37,12 +37,12 @@ impl error::ResponseError for YtDlErrors {
         }
     }
     fn error_response(&self) -> actix_web::HttpResponse {
-        HttpResponse::build(self.status_code()).json(self.error_response())
+        HttpResponse::build(self.status_code()).json(self.err_response())
     }
 }
 impl fmt::Display for YtDlErrors {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        write!(f, "{}", self)
+        write!(f, "{}", self.err_response())
     }
 }
 impl From<ActixError> for YtDlErrors {

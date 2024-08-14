@@ -8,9 +8,9 @@ edition = "2021"
 actix-web = "4.1.0"
 actix-rt = "2.7.0"
 # yt library
-pytube_wrpr = {path= "../pytube_wrpr/"}
+pytube_wrpr = { path = "../pytube_wrpr/" }
 #Enviorment variable access libraries
 dotenv = "0.15.0"
 #Data serialization lib
-serde = {version="1.0.144",features=["derive"]}
+serde = { version = "1.0.144", features = ["derive"] }
 serde_json = "1.0.64"

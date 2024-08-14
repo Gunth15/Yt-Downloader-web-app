@@ -13,7 +13,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new().service(
             web::scope("")
-                .service(web::resource("download/{url}").route(web::post().to(download_video)))
+                .service(web::resource("download/{id}").route(web::post().to(download_video)))
                 .service(web::resource("delete/!!").route(web::delete().to(delete_all)))
                 .service(web::resource("delete/{title}").route(web::delete().to(delete_video))),
         )
