@@ -24,4 +24,17 @@ pub mod models {
             }
         }
     }
+    #[derive(Debug, Clone, Serialize, Deserialize)]
+    pub struct DeleteRequest {
+        pub video_id: String,
+        pub title: String,
+    }
+    impl From<web::Json<DeleteRequest>> for DeleteRequest {
+        fn from(req: web::Json<DeleteRequest>) -> Self {
+            DeleteRequest {
+                video_id: req.video_id.clone(),
+                title: req.title.clone(),
+            }
+        }
+    }
 }

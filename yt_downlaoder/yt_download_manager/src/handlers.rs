@@ -1,3 +1,5 @@
+use crate::models::DeleteRequest;
+
 use super::errors::YtDlErrors;
 use super::models::FetchMeta;
 use actix_web::{web, HttpResponse};
@@ -40,13 +42,19 @@ pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtD
 }
 
 //deletes a video from downloads folder and retrurns json of completion
-pub async fn delete_video(path: web::Path<String>) -> Result<HttpResponse, YtDlErrors> {
+pub async fn delete_video(
+    delete_req: web::Json<DeleteRequest>,
+) -> Result<HttpResponse, YtDlErrors> {
+    let delete_req = DeleteRequest::from(delete_req);
+
     let dir = env::var("CARGO_MANIFEST_DIR")
         .map_err(|_err| YtDlErrors::DlError("Directoty Missing".to_string()))?;
-    let video_location = format!("{dir}/downloads/{}{}", path.into_inner(), ".mp4");
+    let video_location = format!("{dir}/downloads/{}{}", delete_req.title, ".mp4");
 
     fs::remove_file(&video_location).map_err(|_err| {
-        YtDlErrors::FileError("File was not found or download directory does not exist".to_string())
+        YtDlErrors::FileError(format!(
+            "{video_location} was not found or download directory does not exist"
+        ))
     })?;
 
     println!("deleted video at {:?}", &video_location);
@@ -89,10 +97,13 @@ mod tests {
     }
     #[actix_rt::test]
     async fn delete_video_test() {
-        let title = web::Path::from(
-            "Rick Astley - Never Gonna Give You Up (Official Music Video)".to_string(),
-        );
-        let resp = delete_video(title).await.unwrap();
+        let delete_request: web::Json<DeleteRequest> = web::Json(DeleteRequest {
+            title: "Rick Astley - Never Gonna Give You Up (Official Music Video)".to_string(),
+            video_id: "dQw4w9WgXcQ".to_string(),
+        });
+
+        let resp = delete_video(delete_request).await.unwrap();
+
         assert_eq!(resp.status(), StatusCode::OK);
 
         let dir = env::var("CARGO_MANIFEST_DIR").unwrap();
