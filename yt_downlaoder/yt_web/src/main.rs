@@ -22,7 +22,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(shared_dbpool.clone())
             .app_data(web::Data::new(tera))
-            .service(fs::Files::new("/static", ".").show_files_listing())
+            .service(fs::Files::new("/static", "./static").show_files_listing())
             .default_service(web::get().to(err_handler))
             .configure(videos::video_routes)
             .configure(user::new_user_routes)
