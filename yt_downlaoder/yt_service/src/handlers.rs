@@ -11,9 +11,9 @@ pub async fn create_video(
     video_request: web::Json<VideoRequest>,
 ) -> Result<HttpResponse, YtManErr> {
     let uid = path.into_inner();
-    let meta = download_video_yt(video_request.into()).await.unwrap();
+    let meta = download_video_yt(video_request.into()).await?;
     let video_query = VideoQuery::from_meta(meta, uid);
-    let res = create_video_db(&app_data.db, video_query).await.unwrap();
+    let res = create_video_db(&app_data.db, video_query).await?;
 
     Ok(HttpResponse::Ok().json(&res))
 }
@@ -24,18 +24,18 @@ pub async fn delete_video(
     let delete_request: DeleteRequest = delete_request.into();
     let vid = &delete_request.video_id;
 
-    let resp = delete_video_db(&app_data.db, vid).await.unwrap();
-    let _resp = delete_video_yt(delete_request).await.unwrap();
+    let resp = delete_video_db(&app_data.db, vid).await?;
+    let _resp = delete_video_yt(delete_request).await?;
 
     Ok(HttpResponse::Ok().json(&resp))
 }
 pub async fn get_all_videos(app_data: web::Data<AppData>) -> Result<HttpResponse, YtManErr> {
-    let res = get_all_videos_db(&app_data.db).await.unwrap();
+    let res = get_all_videos_db(&app_data.db).await?;
     Ok(HttpResponse::Ok().json(&res))
 }
 pub async fn delete_all_videos(app_data: web::Data<AppData>) -> Result<HttpResponse, YtManErr> {
-    let _res = delete_all_yt().await.unwrap();
-    let res = delete_all_videos_db(&app_data.db).await.unwrap();
+    let _res = delete_all_yt().await?;
+    let res = delete_all_videos_db(&app_data.db).await?;
     Ok(HttpResponse::Ok().json(&res))
 }
 
