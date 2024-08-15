@@ -1,6 +1,6 @@
 use crate::dbscripts::get_userid_db;
 use crate::errors::WebErrors;
-use crate::models::{DlRequest, VideoQuery, VideoRequest};
+use crate::models::{DeleteRequest, DlRequest, VideoQuery, VideoRequest};
 use crate::state::AppData;
 use actix_web::{web, HttpResponse};
 use argon2::{self, Config};
@@ -32,13 +32,23 @@ pub async fn get_videos_handler(tmpl: web::Data<Tera>) -> Result<HttpResponse, W
 
     Ok(HttpResponse::Ok().content_type("text/html").body(ren))
 }
-pub async fn delete_video_handler(video_id: web::Path<String>) -> Result<HttpResponse, WebErrors> {
+pub async fn delete_video_handler(
+    deletion: web::Form<DeleteRequest>,
+) -> Result<HttpResponse, WebErrors> {
     dotenv().ok();
+    let delete_request: DeleteRequest = deletion.into();
+    let video_id = &delete_request.video_id;
 
     let cli = awc::Client::default();
     let client_port = env::var("CLIENT_PORT").expect("Client port not set in .env file");
-    let url = format!("http://{client_port}/videos/{video_id}");
-    let req = cli.delete(url).send().await?.body().await.unwrap();
+    let url = format!("http://{client_port}/videos/delete/{video_id}");
+    let req = cli
+        .delete(url)
+        .send_json(&delete_request)
+        .await?
+        .body()
+        .await
+        .unwrap();
 
     let resp = std::str::from_utf8(&req).unwrap().to_string();
     Ok(HttpResponse::Ok().content_type("text/html").body(resp))
@@ -78,6 +88,7 @@ pub async fn post_video_handler(
         println!("{url}");
         let req = cli
             .post(url)
+            .timeout(std::time::Duration::from_secs(60))
             .send_json(&video_req)
             .await?
             .body()

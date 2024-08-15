@@ -84,3 +84,17 @@ pub struct DlRequest {
     pub password: String,
     pub id: i32,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeleteRequest {
+    pub video_id: String,
+    pub title: String,
+}
+impl From<web::Form<DeleteRequest>> for DeleteRequest {
+    fn from(req: web::Form<DeleteRequest>) -> Self {
+        DeleteRequest {
+            video_id: req.video_id.clone(),
+            title: req.title.clone(),
+        }
+    }
+}

@@ -1,5 +1,4 @@
 use actix_web::error::Error as ActErr;
-use actix_web::ResponseError;
 use actix_web::{error, http::StatusCode, HttpResponse};
 use awc::error::SendRequestError;
 use serde::Serialize;

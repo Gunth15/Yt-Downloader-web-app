@@ -14,9 +14,11 @@
   <div>
     <img src="{{ video.thumbnail_url }}" alt="No Image Available">
     <a href="{{ video.url }}">{{ video.title }}</a>
-    <form method="delete" action="videos/delete/{{ video.video_id }}">
+    <form method="post" action="/videos/delete">
       <label for="del">Delete video</label>
-      <input type="submit" name="del">
+      <input type="hidden" name="title" value="{{ video.title }}">
+      <input type="hidden" name="video_id" value="{{ video.video_id }}">
+      <input type="submit" name="">
     </form>
     Downloaded by {{ video.user_id }} at {{ video.query_time }}
     With size {{ video.size }}
