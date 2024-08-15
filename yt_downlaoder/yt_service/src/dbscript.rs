@@ -16,7 +16,7 @@ pub async fn create_video_db(pool: &PgPool, query: VideoQuery) -> Result<String,
         query.video_id,
         query.size,
     )
-    .fetch_one(pool)
+    .execute(pool)
     .await?;
     Ok("Successfully Downloaded".to_string())
 }

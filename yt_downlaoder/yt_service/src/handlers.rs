@@ -1,6 +1,6 @@
 use crate::dbscript::{create_video_db, delete_all_videos_db, delete_video_db, get_all_videos_db};
 use crate::errors::YtManErr;
-use crate::models::{VideoQuery, VideoRequest};
+use crate::models::{DeleteRequest, VideoQuery, VideoRequest};
 use crate::state::AppData;
 use crate::ytscripts::{delete_all_yt, delete_video_yt, download_video_yt};
 use actix_web::{web, HttpResponse};
@@ -19,12 +19,13 @@ pub async fn create_video(
 }
 pub async fn delete_video(
     app_data: web::Data<AppData>,
-    path: web::Path<String>,
+    delete_request: web::Json<DeleteRequest>,
 ) -> Result<HttpResponse, YtManErr> {
-    let vid = path.into_inner();
+    let delete_request: DeleteRequest = delete_request.into();
+    let vid = &delete_request.video_id;
 
-    let _resp = delete_video_yt(&vid).await.unwrap();
-    let resp = delete_video_db(&app_data.db, &vid).await.unwrap();
+    let resp = delete_video_db(&app_data.db, vid).await.unwrap();
+    let _resp = delete_video_yt(delete_request).await.unwrap();
 
     Ok(HttpResponse::Ok().json(&resp))
 }
@@ -70,9 +71,12 @@ mod tests {
         let pool = PgPool::connect(&database_url).await.unwrap();
 
         let app_data: web::Data<AppData> = web::Data::new(AppData { db: pool });
-        let vid = web::Path::from("v=dQw4w9WgXcQ".to_string());
+        let delete_request: web::Json<DeleteRequest> = web::Json(DeleteRequest {
+            title: "Rick Astley - Never Gonna Give You Up (Official Music Video)".to_string(),
+            video_id: "dQw4w9WgXcQ".to_string(),
+        });
 
-        let res = delete_video(app_data, vid).await.unwrap();
+        let res = delete_video(app_data, delete_request).await.unwrap();
         assert_eq!(res.status(), StatusCode::OK);
     }
     #[actix_rt::test]
