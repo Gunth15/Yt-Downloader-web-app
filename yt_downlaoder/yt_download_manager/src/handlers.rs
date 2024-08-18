@@ -12,7 +12,10 @@ pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtD
     let id = path.into_inner();
     let url = format!("youtube.com/watch?v={id}");
     //query containts image url and title of file
-    let mut query = pytube_wrpr::download_n_fetch(&url)?;
+    let mut dir = env::current_dir().expect("could not find path");
+    dir.push("downloads");
+
+    let mut query = pytube_wrpr::download_n_fetch(&url, dir.to_str().unwrap())?;
 
     let thumbnail_url = query.remove(0);
     let title = {

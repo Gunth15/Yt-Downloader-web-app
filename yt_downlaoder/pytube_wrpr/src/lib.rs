@@ -1,11 +1,8 @@
 use pyo3::prelude::*;
-use std::env;
 use std::fmt;
 use std::vec::Vec;
 
-pub fn download_n_fetch(url: &str) -> Result<Vec<String>, Error> {
-    let dir = env::var("CARGO_MANIFEST_DIR").expect("No such directory");
-
+pub fn download_n_fetch(url: &str, dir: &str) -> Result<Vec<String>, Error> {
     let pscript = r#"
 from pytubefix import YouTube
 #Fetches meta data of video and downloads video
@@ -58,10 +55,15 @@ impl std::fmt::Display for Error {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::env;
     use std::fs;
+
     #[test]
     fn test_dwnld() {
-        let mut query = download_n_fetch("https://www.youtube.com/watch?v=dQw4w9WgXcQ").unwrap();
+        let dir = env::var("CARGO_MANIFEST_DIR").expect("No such directory");
+
+        let mut query =
+            download_n_fetch("https://www.youtube.com/watch?v=dQw4w9WgXcQ", &dir).unwrap();
 
         let file_name = query.remove(1);
         println!("{file_name}");
