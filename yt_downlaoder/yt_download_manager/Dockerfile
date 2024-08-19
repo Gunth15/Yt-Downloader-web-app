@@ -18,7 +18,6 @@ RUN cargo build --release
 FROM python:3.11
 #copy rust build
 COPY --from=build /download_manager/target/release/yt_download_manager /download_manager/yt_download_manager
-COPY --from=build /download_manager/.env /download_manager/.env
 WORKDIR /download_manager
 #source python virtual enviornment and install pytubefix
 RUN python3.11 -m venv venv && . venv/bin/activate
