@@ -10,6 +10,12 @@ use yt_web::{routes::*, state::AppData};
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
 
+    let dir = env::current_dir()
+        .expect("Error, coulfnt find current directory")
+        .to_str()
+        .unwrap()
+        .to_string();
+
     // Host port from .env file
     let host_port = env::var("HOST_PORT").expect("Host port not set in .env file");
     println!("Listening on port {:?}", &host_port);
@@ -18,7 +24,7 @@ async fn main() -> std::io::Result<()> {
     let db_pool = sqlx::postgres::PgPool::connect(&db_addr).await.unwrap();
     let shared_dbpool = web::Data::new(AppData { db: db_pool });
     HttpServer::new(move || {
-        let tera = Tera::new(concat!(env!("CARGO_MANIFEST_DIR"), "/static/html/**/*")).unwrap();
+        let tera = Tera::new(&format!("{dir}/static/html/**/*")).unwrap();
         App::new()
             .app_data(shared_dbpool.clone())
             .app_data(web::Data::new(tera))

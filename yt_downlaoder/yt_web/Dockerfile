@@ -13,6 +13,7 @@ FROM debian:bullseye-slim
 
 # port binary
 COPY --from=build /yt_web/target/release/yt_web /main/yt_web
+COPY --from=build /yt_web/static /main/static
 WORKDIR /main
 
 CMD [ "yt_web" ]
