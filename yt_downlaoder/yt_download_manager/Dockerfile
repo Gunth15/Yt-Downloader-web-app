@@ -4,9 +4,11 @@ FROM rust:1.80.1 AS build
 
 #copy pytubewrpr dependency
 COPY /pytube_wrpr/ /pytube_wrpr
-#set rust directory and the copy to image 
+
+#copy crate to image and set as dir 
 COPY /yt_download_manager/ /download_manager
 WORKDIR /download_manager
+
 
 #compile python dependency
 RUN apt-get update && apt-get install -y python3 python3-pip

@@ -10,7 +10,7 @@ This is a simple youtube downloader web server that is supposed to be ran on a m
 
 - ![Actix web](https://actix.rs/img/logo.png) [https://actix.rs/]
 - ![postgresql](https://www.postgresql.org/media/img/about/press/elephant.png) [https://www.postgresql.org/]
-- ![Python3.11][https://www.python.org/static/img/python-logo.png](https://www.python.org/) Python 3.11
+- ![Python3.11][https://www.python.org/static/img/python-logo.png](https://www.python.org/)
 - ![Rust][https://www.rust-lang.org/static/images/rust-logo-blk.svg](https://www.rust-lang.org/)
 - [Pytubefix](https://github.com/JuanBindez/pytubefix)
 - [Serde_json](https://github.com/serde-rs/json)
