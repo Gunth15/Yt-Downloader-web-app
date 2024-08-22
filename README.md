@@ -96,3 +96,9 @@ DON'T FORGET TO SOURCE .PENV BEFORE USING `yt_downloader_manager`
 ## Docker
 
 Compiling with docker is a WIP
+
+## Special thanks to
+
+- Jack Branch
+- The Actix crew
+- and you!
