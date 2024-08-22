@@ -1,0 +1,87 @@
+services:
+  db1:
+    container_name: dl_db
+    restart: always
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=yt
+      - POSTGRES_PASSWORD=youtube
+      - POSTGRES_DB=youtube_service
+    volumes:
+      - Video_data:/var/lib/postgresql/data
+      - ./yt_service/src/dbscript.sql:/docker-entrypoint-initdb.d/video.sql
+    ports:
+      - 5432:5432
+    networks:
+      - download-network
+  db2:
+    container_name: user_db
+    restart: always
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=user_mn
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=dl_users
+    volumes:
+      - User_data:/var/lib/postgresql/data
+      - ./yt_web/src/dbscript.sql:/docker-entrypoint-initdb.d/user.sql
+    ports:
+      - 5433:5432
+    networks:
+      - download-network
+  dl_mngr:
+    restart: on-failure
+    container_name: yt_download_manager
+    build:
+      context: .
+      dockerfile: ./yt_download_manager/Dockerfile
+      network: host
+    volumes:
+      - downloads:/download_manager/downloads
+    environment:
+      - HOST_PORT=${HOST_PORT_DL}
+    ports:
+      - 3030:3030
+    networks:
+      - download-network
+  video_api:
+    restart: on-failure
+    container_name: yt_service
+    build:
+      context: ./yt_service/
+      dockerfile: Dockerfile
+      network: host
+    environment:
+      - DATABASE_URL=${DATABASE1_URL}
+      - HOST_PORT=${HOST_PORT_API}
+      - CLIENT_PORT=${HOST_PORT_DL}
+    depends_on:
+      - db1
+    ports:
+      - 3000:3000
+    networks:
+      - download-network
+  video_web:
+    restart: on-failure
+    container_name: yt_web
+    build:
+      context: ./yt_web/
+      dockerfile: Dockerfile
+      network: host
+    environment:
+      - DATABASE_URL=${DATABASE2_URL}
+      - HOST_PORT=${HOST_PORT_WEB}
+      - CLIENT_PORT=${HOST_PORT_API}
+    depends_on:
+      - video_api
+      - db2
+    ports:
+      - 8080:8080
+    networks:
+      - download-network
+volumes:
+  Video_data:
+  User_data:
+  downloads:
+networks:
+  download-network:
