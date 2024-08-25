@@ -12,8 +12,6 @@ services:
       - ./yt_service/src/dbscript.sql:/docker-entrypoint-initdb.d/video.sql
     ports:
       - 5432:5432
-    networks:
-      - download-network
   db2:
     container_name: user_db
     restart: always
@@ -27,8 +25,6 @@ services:
       - ./yt_web/src/dbscript.sql:/docker-entrypoint-initdb.d/user.sql
     ports:
       - 5433:5432
-    networks:
-      - download-network
   dl_mngr:
     restart: on-failure
     container_name: yt_download_manager
@@ -42,8 +38,6 @@ services:
       - HOST_PORT=${HOST_PORT_DL}
     ports:
       - 3030:3030
-    networks:
-      - download-network
   video_api:
     restart: on-failure
     container_name: yt_service
@@ -59,8 +53,6 @@ services:
       - db1
     ports:
       - 3000:3000
-    networks:
-      - download-network
   video_web:
     restart: on-failure
     container_name: yt_web
@@ -77,11 +69,7 @@ services:
       - db2
     ports:
       - 8080:8080
-    networks:
-      - download-network
 volumes:
   Video_data:
   User_data:
   downloads:
-networks:
-  download-network:

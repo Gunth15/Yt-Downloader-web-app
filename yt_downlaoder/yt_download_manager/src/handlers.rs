@@ -5,6 +5,7 @@ use super::models::FetchMeta;
 use actix_web::{web, HttpResponse};
 use pytube_wrpr;
 use std::env;
+use std::fmt::format;
 use std::fs;
 
 //downloads videos to downloads folder and returns json metas data of video
@@ -26,10 +27,9 @@ pub async fn download_video(path: web::Path<String>) -> Result<HttpResponse, YtD
     };
 
     //get size of video
-    let dir = env::var("CARGO_MANIFEST_DIR")
-        .map_err(|_err| YtDlErrors::DlError("Directoty Missing".to_string()))?;
-    let file_name = format!("{dir}/downloads/{title}.mp4");
-    println!("Downloaded video {}", &file_name);
+    dir.push(&format!("{title}.mp4"));
+    let file_name = dir.to_str().unwrap();
+    println!("Downloaded video {}", file_name);
 
     let size = fs::metadata(file_name)
         .map_err(|_err| YtDlErrors::DlError("File Missing".to_string()))?
@@ -50,24 +50,24 @@ pub async fn delete_video(
 ) -> Result<HttpResponse, YtDlErrors> {
     let delete_req = DeleteRequest::from(delete_req);
 
-    let dir = env::var("CARGO_MANIFEST_DIR")
-        .map_err(|_err| YtDlErrors::DlError("Directoty Missing".to_string()))?;
-    let video_location = format!("{dir}/downloads/{}{}", delete_req.title, ".mp4");
-
-    fs::remove_file(&video_location).map_err(|_err| {
+    let mut dir = env::current_dir().expect("could not find path");
+    dir.push("downloads");
+    dir.push(&format!("{}.mp4", delete_req.title));
+    let video_location = dir.to_str().unwrap();
+    fs::remove_file(video_location).map_err(|_err| {
         YtDlErrors::FileError(format!(
             "{video_location} was not found or download directory does not exist"
         ))
     })?;
 
-    println!("deleted video at {:?}", &video_location);
-    Ok(HttpResponse::Ok().json(&format!("{:?} was removed", &video_location)))
+    println!("deleted video at {:?}", video_location);
+    Ok(HttpResponse::Ok().json(&format!("{:?} was removed", video_location)))
 }
 //deletes all videos in downloads directory and returns json of success
 pub async fn delete_all() -> Result<HttpResponse, YtDlErrors> {
-    let dir = env::var("CARGO_MANIFEST_DIR")
-        .map_err(|_err| YtDlErrors::DlError("Directoty Missing".to_string()))?;
-    let download_dir = format!("{dir}/downloads/");
+    let mut dir = env::current_dir().expect("could not find path");
+    dir.push("downloads");
+    let download_dir = dir.to_str().unwrap();
 
     fs::remove_dir_all(download_dir).map_err(|_err| {
         YtDlErrors::FileError("Download directory could not be found no files deleted".to_string())

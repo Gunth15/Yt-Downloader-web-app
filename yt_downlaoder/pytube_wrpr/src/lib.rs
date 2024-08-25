@@ -14,14 +14,13 @@ def download_n_fetchmeta (url,dir):
     yt.streams.first().download(output_path=dir)
     return query
     "#;
-    let dwnld_folder_path = format!("{dir}/downloads/");
     let result: Result<Vec<String>, PyErr> = Python::with_gil(|py| {
         let download_and_fetch =
             PyModule::from_code_bound(py, &pscript, "DlnFetch.py", "DlnFetch").unwrap();
         download_and_fetch
             .getattr("download_n_fetchmeta")
             .expect("Fatal error, could not find function")
-            .call1((url, dwnld_folder_path))?
+            .call1((url, dir))?
             .extract()
     });
 
@@ -59,6 +58,7 @@ mod tests {
     use std::fs;
 
     #[test]
+    //TODO: test does not work rn: need to change the input dir
     fn test_dwnld() {
         let dir = env::var("CARGO_MANIFEST_DIR").expect("No such directory");
 
