@@ -2,7 +2,7 @@ use crate::errors::YtManErr;
 use crate::models::VideoQuery;
 use sqlx::postgres::PgPool;
 
-pub async fn create_video_db(pool: &PgPool, query: VideoQuery) -> Result<String, YtManErr> {
+pub async fn create_video_db(pool: &PgPool, query: VideoQuery, vid: String) -> Result<String, YtManErr> {
     sqlx::query!(
         "
         INSERT INTO videos 
@@ -13,7 +13,7 @@ pub async fn create_video_db(pool: &PgPool, query: VideoQuery) -> Result<String,
         query.url,
         query.thumbnail_url,
         query.user_id,
-        query.video_id,
+        vid,
         query.size,
     )
     .execute(pool)

@@ -11,9 +11,10 @@ pub async fn create_video(
     video_request: web::Json<VideoRequest>,
 ) -> Result<HttpResponse, YtManErr> {
     let uid = path.into_inner();
+    let vid = video_request.url.split_once("v=").unwrap().1.to_string();
     let meta = download_video_yt(video_request.into()).await?;
     let video_query = VideoQuery::from_meta(meta, uid);
-    let res = create_video_db(&app_data.db, video_query).await?;
+    let res = create_video_db(&app_data.db, video_query,vid).await?;
 
     Ok(HttpResponse::Ok().json(&res))
 }
