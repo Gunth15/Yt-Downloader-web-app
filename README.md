@@ -10,13 +10,33 @@ This is a simple youtube downloader web server that is supposed to be ran on a m
 
 - ![Actix web](https://actix.rs/img/logo.png) [https://actix.rs/]
 - ![postgresql](https://www.postgresql.org/media/img/about/press/elephant.png) [https://www.postgresql.org/]
-- ![Python3.11](https://www.python.org/static/img/python-logo.png)[https://www.python.org/]
-- ![Rust](https://www.rust-lang.org/static/images/rust-logo-blk.svg)[https://www.rust-lang.org/]
+- ![Python3.11][https://www.python.org/static/img/python-logo.png](https://www.python.org/)
+- ![Rust][https://www.rust-lang.org/static/images/rust-logo-blk.svg](https://www.rust-lang.org/)
 - [Pytubefix](https://github.com/JuanBindez/pytubefix)
 - [Serde_json](https://github.com/serde-rs/json)
 - [Tera](https://github.com/Keats/tera)
 
-#### optional deployment method(WIP)
+#### optional deployment method
+
+Simply run these commands
+
+Start the databases
+
+```Bash
+Docker compose up db1 db2 -d
+```
+
+Build the app images
+
+```Bash
+Docker compose build
+```
+
+The you can run by running
+
+```bash
+Docker compose up
+```
 
 ![DOCKER](https://driftt.imgix.net/https%3A%2F%2Fdriftt.imgix.net%2Fhttps%253A%252F%252Fs3.us-east-1.amazonaws.com%252Fcustomer-api-avatars-prod%252F5244849%252Fb3353cad7116db6f9be2bc43cfbc048374xfdtnudd3c%3Ffit%3Dmax%26fm%3Dpng%26h%3D200%26w%3D200%26s%3D7ff0c42ec0bafa67064f35811896732f?fit=max&fm=png&h=200&w=200&s=e33d56d911e571a3b45193bc603e41a1) [https://www.docker.com/]
 
