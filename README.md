@@ -16,7 +16,7 @@ This is a simple youtube downloader web server that is supposed to be ran on a m
 - [Serde_json](https://github.com/serde-rs/json)
 - [Tera](https://github.com/Keats/tera)
 
-#### optional deployment method
+## Easy Docker deployment method
 
 Simply run these commands
 
